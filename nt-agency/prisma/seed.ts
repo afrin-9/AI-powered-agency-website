@@ -13,7 +13,7 @@ async function main() {
   await prisma.teamMember.deleteMany();
   await prisma.user.deleteMany();
 
-  const [admin, staff] = await Promise.all([
+  await Promise.all([
     prisma.user.create({
       data: {
         name: "Admin",

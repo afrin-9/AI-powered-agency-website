@@ -1,15 +1,177 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum Category {
+  WEB
+  MOBILE
+  AI_ML
+  ECOMMERCE
+  UI_UX
+  OTHER
+}
+
+enum Timeline {
+  RUSH
+  NORMAL
+  FLEXIBLE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  PROPOSAL_SENT
+  WON
+  LOST
+}
+
+enum ProjectStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ---------- Users ----------
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  passwordHash  String
+  role          Role           @default(STAFF)
+  assignedLeads Lead[]
+  activities    LeadActivity[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+// ---------- Services ----------
+
+model Service {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  category        Category
+  summary         String
+  description     String
+  basePrice       Int
+  pricePerFeature Int
+  typicalWeeks    Int
+  active          Boolean   @default(true)
+  leads           Lead[]
+  projects        Project[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ---------- Leads ----------
+
+model Lead {
+  id           String         @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  company      String?
+  features     Int            @default(1)
+  timeline     Timeline       @default(NORMAL)
+  budget       Int?
+  message      String
+  status       LeadStatus     @default(NEW)
+  score        Int            @default(0)
+  serviceId    String?
+  service      Service?       @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  assignedToId String?
+  assignedTo   User?          @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  activities   LeadActivity[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([status])
+  @@index([score])
+  @@index([createdAt])
+}
+
+/// Audit trail for a lead: status changes and notes.
+model LeadActivity {
+  id         String      @id @default(cuid())
+  leadId     String
+  lead       Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fromStatus LeadStatus?
+  toStatus   LeadStatus?
+  note       String?
+  createdAt  DateTime    @default(now())
+
+  @@index([leadId])
+}
+
+// ---------- Portfolio / delivery ----------
+
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  company   String?
+  email     String
+  phone     String?
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id         String        @id @default(cuid())
+  title      String
+  slug       String        @unique
+  summary    String
+  techStack  String[]
+  status     ProjectStatus @default(PLANNED)
+  budget     Int?
+  published  Boolean       @default(false)
+  serviceId  String?
+  service    Service?      @relation(fields: [serviceId], references: [id], onDelete: SetNull)
+  clientId   String?
+  client     Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  milestones Milestone[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Milestone {
+  id        String    @id @default(cuid())
+  projectId String
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  dueDate   DateTime?
+  done      Boolean   @default(false)
+  position  Int       @default(0)
+
+  @@index([projectId])
+}
+
+// ---------- Team ----------
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
