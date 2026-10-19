@@ -22,8 +22,8 @@ type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
   primary: "bg-brand-600 text-white shadow-sm hover:bg-brand-700",
-  secondary: "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50",
-  ghost: "text-slate-700 hover:bg-slate-100",
+  secondary: "border border-white/15 bg-night-900 text-slate-100 hover:bg-night-800/60",
+  ghost: "text-slate-200 hover:bg-night-800",
   danger: "bg-red-600 text-white hover:bg-red-700",
 };
 
@@ -70,25 +70,25 @@ export function Field({
 }) {
   return (
     <div className="space-y-1">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-700">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-200">
         {label}
       </label>
       {children}
       {error ? (
-        <p className="text-xs text-red-600" role="alert">
+        <p className="text-xs text-red-400" role="alert">
           {error}
         </p>
       ) : (
-        hint && <p className="text-xs text-slate-500">{hint}</p>
+        hint && <p className="text-xs text-slate-400">{hint}</p>
       )}
     </div>
   );
 }
 
 const inputBase =
-  "w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/40";
+  "w-full rounded-lg border bg-night-950/70 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40";
 
-const borderFor = (invalid?: boolean) => (invalid ? "border-red-400" : "border-slate-300");
+const borderFor = (invalid?: boolean) => (invalid ? "border-red-400" : "border-white/15");
 
 export function Input({ invalid, className, ...props }: InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }) {
   return <input {...props} aria-invalid={invalid || undefined} className={cn(inputBase, borderFor(invalid), className)} />;
@@ -120,17 +120,17 @@ export function Select({
 // ---------- Display ----------
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("rounded-xl border border-slate-200 bg-white shadow-sm", className)}>{children}</div>;
+  return <div className={cn("rounded-xl border border-white/10 bg-night-900 shadow-sm", className)}>{children}</div>;
 }
 
 const badgeColors = {
-  slate: "bg-slate-100 text-slate-700",
-  blue: "bg-blue-100 text-blue-700",
-  amber: "bg-amber-100 text-amber-800",
-  violet: "bg-violet-100 text-violet-700",
-  green: "bg-emerald-100 text-emerald-700",
-  red: "bg-red-100 text-red-700",
-  indigo: "bg-brand-100 text-brand-700",
+  slate: "bg-night-800 text-slate-200",
+  blue: "bg-blue-500/15 text-blue-300",
+  amber: "bg-amber-500/15 text-amber-300",
+  violet: "bg-violet-500/15 text-violet-300",
+  green: "bg-emerald-500/15 text-emerald-300",
+  red: "bg-red-500/15 text-red-300",
+  indigo: "bg-brand-500/20 text-brand-300",
 } as const;
 
 export type BadgeColor = keyof typeof badgeColors;
@@ -145,7 +145,7 @@ export function Badge({ color = "slate", children }: { color?: BadgeColor; child
 
 export function Spinner({ label = "Loading..." }: { label?: string }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-500" role="status">
+    <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-400" role="status">
       <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> {label}
     </div>
   );
@@ -153,9 +153,9 @@ export function Spinner({ label = "Loading..." }: { label?: string }) {
 
 export function EmptyState({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
-      <p className="font-medium text-slate-800">{title}</p>
-      {description && <p className="max-w-sm text-sm text-slate-500">{description}</p>}
+    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 bg-night-900 px-6 py-12 text-center">
+      <p className="font-medium text-slate-100">{title}</p>
+      {description && <p className="max-w-sm text-sm text-slate-400">{description}</p>}
       {action && <div className="mt-2">{action}</div>}
     </div>
   );
@@ -163,7 +163,7 @@ export function EmptyState({ title, description, action }: { title: string; desc
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
-    <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-6 text-center text-sm text-red-700" role="alert">
+    <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-6 text-center text-sm text-red-300" role="alert">
       <p>{message}</p>
       {onRetry && (
         <Button variant="secondary" size="sm" className="mt-3" onClick={onRetry}>
@@ -188,19 +188,19 @@ export function Modal({
   if (!open) return null;
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center"
       onClick={onClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-night-900 p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <button onClick={onClose} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Close">
+          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-night-800" aria-label="Close">
             <X className="h-4 w-4" />
           </button>
         </div>

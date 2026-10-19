@@ -33,6 +33,10 @@ export default async function HomePage() {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_75%_65%,rgb(124_58_237/0.45),transparent_55%),radial-gradient(ellipse_at_10%_0%,rgb(76_29_149/0.35),transparent_45%)]"
         />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-linear-to-b from-transparent to-night-950"
+        />
         <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:pb-14">
           <div>
             <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-400/30 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-200">
@@ -83,9 +87,9 @@ export default async function HomePage() {
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <h2 className="text-2xl font-bold">What we do</h2>
-            <p className="mt-1 text-slate-600">End-to-end services from idea to launch.</p>
+            <p className="mt-1 text-slate-300">End-to-end services from idea to launch.</p>
           </div>
-          <Link href="/services" className="text-sm font-medium text-brand-700 hover:underline">
+          <Link href="/services" className="text-sm font-medium text-brand-300 hover:underline">
             All services →
           </Link>
         </div>
@@ -95,21 +99,21 @@ export default async function HomePage() {
             return (
               <div
                 key={s.id}
-                className="rounded-xl border border-brand-100 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md hover:shadow-brand-200/50"
+                className="rounded-xl border border-brand-400/15 bg-night-900 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400/50 hover:shadow-md hover:shadow-brand-600/20"
               >
-                <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-50">
-                  <Icon className="h-6 w-6 text-brand-600" />
+                <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-500/10">
+                  <Icon className="h-6 w-6 text-brand-400" />
                 </span>
                 <h3 className="mt-3 font-semibold">{s.name}</h3>
-                <p className="mt-1 text-sm text-slate-600">{s.summary}</p>
-                <p className="mt-3 text-sm font-medium text-slate-900">From {money(s.basePrice)}</p>
+                <p className="mt-1 text-sm text-slate-300">{s.summary}</p>
+                <p className="mt-3 text-sm font-medium text-white">From {money(s.basePrice)}</p>
               </div>
             );
           })}
         </div>
       </section>
 
-      <section className="border-y border-brand-100 bg-white py-16">
+      <section className="bg-[radial-gradient(ellipse_65%_50%_at_50%_50%,rgb(46_16_101/0.55),transparent_100%)] py-20">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="text-2xl font-bold">How we work</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -119,7 +123,7 @@ export default async function HomePage() {
                   {i + 1}
                 </span>
                 <h3 className="mt-3 font-semibold">{p.title}</h3>
-                <p className="mt-1 text-sm text-slate-600">{p.text}</p>
+                <p className="mt-1 text-sm text-slate-300">{p.text}</p>
               </div>
             ))}
           </div>
@@ -130,16 +134,16 @@ export default async function HomePage() {
         <section className="mx-auto max-w-6xl px-4 py-16">
           <div className="mb-8 flex items-end justify-between">
             <h2 className="text-2xl font-bold">Recent projects</h2>
-            <Link href="/portfolio" className="text-sm font-medium text-brand-700 hover:underline">
+            <Link href="/portfolio" className="text-sm font-medium text-brand-300 hover:underline">
               Full portfolio →
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             {projects.map((p) => (
-              <article key={p.id} className="rounded-xl border border-brand-100 bg-white p-5 shadow-sm">
-                <p className="text-xs font-medium uppercase tracking-wide text-brand-600">{p.service?.name}</p>
+              <article key={p.id} className="rounded-xl border border-brand-400/15 bg-night-900 p-5 shadow-sm">
+                <p className="text-xs font-medium uppercase tracking-wide text-brand-400">{p.service?.name}</p>
                 <h3 className="mt-2 font-semibold">{p.title}</h3>
-                <p className="mt-2 text-sm text-slate-600">{p.summary}</p>
+                <p className="mt-2 text-sm text-slate-300">{p.summary}</p>
               </article>
             ))}
           </div>
@@ -164,7 +168,7 @@ export default async function HomePage() {
               <AskNixoButton className="rounded-lg border border-brand-300/40 px-5 py-3 font-medium text-brand-100 hover:bg-white/5">
                 Ask Nixo
               </AskNixoButton>
-              <Link href="/quote" className="rounded-lg bg-white px-5 py-3 font-medium text-brand-700 hover:bg-brand-50">
+              <Link href="/quote" className="rounded-lg bg-brand-600 px-5 py-3 font-medium text-white shadow-lg shadow-brand-600/40 hover:bg-brand-500">
                 Start your quote
               </Link>
             </div>

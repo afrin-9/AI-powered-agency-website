@@ -29,9 +29,9 @@ export default async function LoginPage() {
           />
           NT Tech Innovation
         </Link>
-        <div className="rounded-xl bg-white p-6 shadow-2xl shadow-brand-900/40">
+        <div className="rounded-xl bg-night-900 p-6 shadow-2xl shadow-brand-900/40">
           <h1 className="text-xl font-semibold">Team login</h1>
-          <p className="mt-1 text-sm text-slate-500">Sign in to manage leads and content.</p>
+          <p className="mt-1 text-sm text-slate-400">Sign in to manage leads and content.</p>
           <Suspense>
             <LoginForm />
           </Suspense>

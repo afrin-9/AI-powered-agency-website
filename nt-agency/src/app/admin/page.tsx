@@ -18,7 +18,7 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-sm text-slate-500">Sales pipeline overview</p>
+          <p className="text-sm text-slate-400">Sales pipeline overview</p>
         </div>
         <Badge color={ai ? "green" : "amber"}>
           AI triage: {ai ? "Claude connected" : "keyword fallback (no API key)"}
@@ -40,12 +40,12 @@ export default async function DashboardPage() {
               const count = stats.counts[s] ?? 0;
               const pct = stats.total ? (count / stats.total) * 100 : 0;
               return (
-                <Link key={s} href={`/admin/leads?status=${s}`} className="block rounded hover:bg-slate-50">
+                <Link key={s} href={`/admin/leads?status=${s}`} className="block rounded hover:bg-night-800/60">
                   <div className="mb-1 flex justify-between text-sm">
                     <span>{LEAD_STATUS_LABEL[s]}</span>
                     <span className="font-medium">{count}</span>
                   </div>
-                  <div className="h-2 rounded-full bg-slate-100">
+                  <div className="h-2 rounded-full bg-night-800">
                     <div className="h-2 rounded-full bg-brand-500" style={{ width: `${pct}%` }} />
                   </div>
                 </Link>
@@ -57,14 +57,14 @@ export default async function DashboardPage() {
         <Card className="p-5">
           <h2 className="font-semibold">Leads by service</h2>
           <div className="mt-4 space-y-3">
-            {stats.byService.length === 0 && <p className="text-sm text-slate-500">No leads yet.</p>}
+            {stats.byService.length === 0 && <p className="text-sm text-slate-400">No leads yet.</p>}
             {stats.byService.map((s) => (
               <div key={s.name}>
                 <div className="mb-1 flex justify-between text-sm">
                   <span>{s.name}</span>
                   <span className="font-medium">{s.count}</span>
                 </div>
-                <div className="h-2 rounded-full bg-slate-100">
+                <div className="h-2 rounded-full bg-night-800">
                   <div
                     className="h-2 rounded-full bg-emerald-500"
                     style={{ width: `${(s.count / maxService) * 100}%` }}
@@ -79,26 +79,26 @@ export default async function DashboardPage() {
       <Card className="p-5">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Latest inquiries</h2>
-          <Link href="/admin/leads" className="text-sm text-brand-700 hover:underline">
+          <Link href="/admin/leads" className="text-sm text-brand-300 hover:underline">
             View all
           </Link>
         </div>
         {stats.recent.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-500">No inquiries yet.</p>
+          <p className="mt-3 text-sm text-slate-400">No inquiries yet.</p>
         ) : (
-          <ul className="mt-3 divide-y divide-slate-100">
+          <ul className="mt-3 divide-y divide-white/5">
             {stats.recent.map((l) => (
               <li key={l.id}>
                 <Link
                   href={`/admin/leads/${l.id}`}
-                  className="flex items-center justify-between gap-3 py-3 hover:bg-slate-50"
+                  className="flex items-center justify-between gap-3 py-3 hover:bg-night-800/60"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">
                       {l.name}
                       {l.company ? ` · ${l.company}` : ""}
                     </p>
-                    <p className="text-xs text-slate-500">{l.createdAt.toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-400">{l.createdAt.toLocaleDateString()}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <Badge color={scoreColor(l.aiScore)}>Score {l.aiScore ?? "—"}</Badge>
@@ -117,9 +117,9 @@ export default async function DashboardPage() {
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
     <Card className="p-5">
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-slate-400">{label}</p>
       <p className="mt-1 text-2xl font-bold">{value}</p>
-      {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
     </Card>
   );
 }

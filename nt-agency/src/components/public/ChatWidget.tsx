@@ -70,7 +70,7 @@ export function ChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-4 z-50 flex h-[min(560px,75vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-brand-300/40 bg-white shadow-2xl shadow-brand-900/30">
+        <div className="fixed bottom-24 right-4 z-50 flex h-[min(560px,75vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-brand-300/40 bg-night-900 shadow-2xl shadow-brand-900/30">
           <div className="flex items-center gap-3 bg-linear-to-r from-night-950 via-night-800 to-brand-800 px-4 py-3 text-white">
             <NixoAvatar size={40} className="ring-2 ring-brand-400/60" />
             <div>
@@ -79,7 +79,7 @@ export function ChatWidget() {
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto bg-brand-50/40 p-4" aria-live="polite">
+          <div className="flex-1 space-y-3 overflow-y-auto bg-night-950/40 p-4" aria-live="polite">
             {messages.map((m, i) => (
               <div key={i} className={cn("flex items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}>
                 {m.role === "assistant" && <NixoAvatar size={26} />}
@@ -88,7 +88,7 @@ export function ChatWidget() {
                     "max-w-[80%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm",
                     m.role === "user"
                       ? "rounded-br-sm bg-brand-600 text-white"
-                      : "rounded-bl-sm border border-brand-100 bg-white text-slate-800",
+                      : "rounded-bl-sm border border-brand-400/15 bg-night-900 text-slate-100",
                   )}
                 >
                   {m.content}
@@ -96,19 +96,19 @@ export function ChatWidget() {
               </div>
             ))}
             {loading && (
-              <div className="flex items-center gap-2 text-sm text-slate-500">
+              <div className="flex items-center gap-2 text-sm text-slate-400">
                 <NixoAvatar size={26} />
-                <Loader2 className="h-4 w-4 animate-spin text-brand-600" /> Nixo is thinking...
+                <Loader2 className="h-4 w-4 animate-spin text-brand-400" /> Nixo is thinking...
               </div>
             )}
-            {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+            {error && <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
             {messages.length === 1 && (
               <div className="flex flex-wrap gap-2 pl-8">
                 {SUGGESTIONS.map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
-                    className="rounded-full border border-brand-200 bg-white px-3 py-1 text-xs text-brand-700 hover:bg-brand-50"
+                    className="rounded-full border border-brand-400/25 bg-night-900 px-3 py-1 text-xs text-brand-300 hover:bg-brand-500/10"
                   >
                     {s}
                   </button>
@@ -119,7 +119,7 @@ export function ChatWidget() {
           </div>
 
           <form
-            className="flex items-center gap-2 border-t border-brand-100 p-3"
+            className="flex items-center gap-2 border-t border-brand-400/15 p-3"
             onSubmit={(e) => {
               e.preventDefault();
               send(input);
@@ -130,7 +130,7 @@ export function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask Nixo a question..."
               maxLength={MAX_LENGTH}
-              className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40"
+              className="flex-1 rounded-lg border border-white/15 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40"
               aria-label="Your message"
             />
             <button
@@ -142,7 +142,7 @@ export function ChatWidget() {
               <Send className="h-4 w-4" />
             </button>
           </form>
-          <p className="px-3 pb-2 text-center text-[11px] text-slate-400">
+          <p className="px-3 pb-2 text-center text-[11px] text-slate-500">
             Nixo can make mistakes. For exact pricing use{" "}
             <Link href="/quote" className="underline">
               Get a Quote

@@ -25,10 +25,10 @@ function Progress({ milestones }: { milestones: Array<{ done: boolean }> }) {
   const pct = milestones.length ? Math.round((done / milestones.length) * 100) : 0;
   return (
     <div className="w-28">
-      <div className="h-1.5 rounded-full bg-slate-100">
+      <div className="h-1.5 rounded-full bg-night-800">
         <div className="h-1.5 rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
       </div>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-slate-400">
         {done}/{milestones.length} milestones
       </p>
     </div>
@@ -77,7 +77,7 @@ export function ProjectsManager({
           cell: (p) => (
             <div>
               <p className="font-medium">{p.title}</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 {p.client ? (p.client.company ?? p.client.name) : "Internal / portfolio"}
               </p>
             </div>

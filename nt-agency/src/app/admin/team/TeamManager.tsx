@@ -24,7 +24,7 @@ export function TeamManager({ isAdmin }: { isAdmin: boolean }) {
         { header: "Title", cell: (m) => m.role },
         {
           header: "Bio",
-          cell: (m) => <span className="line-clamp-1 text-slate-600">{m.bio}</span>,
+          cell: (m) => <span className="line-clamp-1 text-slate-300">{m.bio}</span>,
           className: "max-w-md px-4 py-3",
         },
       ]}

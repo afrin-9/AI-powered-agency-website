@@ -20,19 +20,25 @@
   --color-night-950: #05021a;
 }
 
+/* Dark theme only: native controls (date pickers, selects, scrollbars) render dark too. */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  background: #faf8ff;
-  color: #0f172a;
+  background: var(--color-night-950);
+  color: var(--color-slate-100);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: rgb(124 58 237 / 0.45);
+  color: #fff;
 }
 
 /* Loading placeholder blocks */
 .skeleton {
-  @apply animate-pulse rounded-md bg-slate-200;
+  @apply animate-pulse rounded-md bg-night-800;
 }
 
 /* Soft neon glow used on headings over dark backgrounds, like the "Meet Nixo" lettering. */

@@ -167,7 +167,7 @@ export function ResourceManager<T extends Item>({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">{title}</h1>
-          {description && <p className="text-sm text-slate-500">{description}</p>}
+          {description && <p className="text-sm text-slate-400">{description}</p>}
         </div>
         {canCreate && (
           <Button onClick={() => openForm()}>
@@ -189,7 +189,7 @@ export function ResourceManager<T extends Item>({
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+              <thead className="bg-night-800/50 text-xs uppercase text-slate-400">
                 <tr>
                   {columns.map((c) => (
                     <th key={c.header} className="px-4 py-3">
@@ -199,11 +199,11 @@ export function ResourceManager<T extends Item>({
                   {showActions && <th className="px-4 py-3 text-right">Actions</th>}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {items.map((item) => (
                   <tr
                     key={item.id}
-                    className={onRowClick ? "cursor-pointer hover:bg-slate-50" : undefined}
+                    className={onRowClick ? "cursor-pointer hover:bg-night-800/60" : undefined}
                     onClick={onRowClick ? () => onRowClick(item) : undefined}
                   >
                     {columns.map((c) => (
@@ -215,7 +215,7 @@ export function ResourceManager<T extends Item>({
                       <td className="whitespace-nowrap px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                         {canEdit && (
                           <button
-                            className="rounded p-1.5 text-slate-500 hover:bg-slate-100"
+                            className="rounded p-1.5 text-slate-400 hover:bg-night-800"
                             onClick={() => openForm(item)}
                             aria-label="Edit"
                           >
@@ -224,7 +224,7 @@ export function ResourceManager<T extends Item>({
                         )}
                         {canDelete && (
                           <button
-                            className="rounded p-1.5 text-red-500 hover:bg-red-50"
+                            className="rounded p-1.5 text-red-400 hover:bg-red-500/10"
                             onClick={() => remove(item)}
                             aria-label="Delete"
                           >

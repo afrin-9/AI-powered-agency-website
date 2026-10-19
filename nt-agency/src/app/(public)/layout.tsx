@@ -11,7 +11,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       </div>
       <Navbar />
       <main className="flex-1">{children}</main>
-      <footer className="bg-night-950 text-slate-400">
+      <footer className="bg-linear-to-b from-transparent to-black/60 pt-8 text-slate-400">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm sm:grid-cols-3">
           <div>
             <p className="font-semibold text-white">NT Tech Innovation</p>
@@ -40,7 +40,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
             </Link>
           </div>
         </div>
-        <p className="border-t border-white/10 py-4 text-center text-xs text-slate-500">
+        <p className="border-t border-white/5 py-4 text-center text-xs text-slate-500">
           © {new Date().getFullYear()} Concept demo
         </p>
       </footer>

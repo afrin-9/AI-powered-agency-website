@@ -126,14 +126,14 @@ export function LeadDetail({ id }: { id: string }) {
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/leads" className="inline-flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900">
+      <Link href="/admin/leads" className="inline-flex items-center gap-1 text-sm text-slate-300 hover:text-white">
         <ArrowLeft className="h-4 w-4" /> Back to leads
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{lead.name}</h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-400">
             {lead.company ? `${lead.company} · ` : ""}
             <a href={`mailto:${lead.email}`} className="hover:underline">
               {lead.email}
@@ -159,7 +159,7 @@ export function LeadDetail({ id }: { id: string }) {
                 if (ok) router.replace("/admin/leads");
               }}
             >
-              <Trash2 className="h-4 w-4 text-red-600" />
+              <Trash2 className="h-4 w-4 text-red-400" />
             </Button>
           )}
         </div>
@@ -169,8 +169,8 @@ export function LeadDetail({ id }: { id: string }) {
         <div className="space-y-6 lg:col-span-2">
           <Card className="p-5">
             <h2 className="font-semibold">Inquiry</h2>
-            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">{lead.message}</p>
-            <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 text-sm sm:grid-cols-3">
+            <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-200">{lead.message}</p>
+            <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-white/5 pt-4 text-sm sm:grid-cols-3">
               <Info label="Service" value={lead.service?.name ?? "Not selected"} />
               <Info label="Features" value={String(lead.features)} />
               <Info label="Timeline" value={TIMELINE_LABEL[lead.timeline]} />
@@ -183,7 +183,7 @@ export function LeadDetail({ id }: { id: string }) {
             </dl>
           </Card>
 
-          <Card className="border-brand-200 p-5">
+          <Card className="border-brand-400/25 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="flex items-center gap-2 font-semibold">
                 <NixoAvatar size={28} /> AI triage
@@ -212,7 +212,7 @@ export function LeadDetail({ id }: { id: string }) {
             </div>
 
             {lead.aiScore == null ? (
-              <p className="mt-3 text-sm text-slate-500">Not triaged yet.</p>
+              <p className="mt-3 text-sm text-slate-400">Not triaged yet.</p>
             ) : (
               <>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -230,7 +230,7 @@ export function LeadDetail({ id }: { id: string }) {
                     <div className="mb-1 flex items-center justify-between">
                       <p className="text-sm font-medium">Suggested reply</p>
                       <button
-                        className="flex items-center gap-1 text-xs text-brand-700 hover:underline"
+                        className="flex items-center gap-1 text-xs text-brand-300 hover:underline"
                         onClick={() =>
                           navigator.clipboard
                             .writeText(lead.aiDraftReply ?? "")
@@ -241,12 +241,12 @@ export function LeadDetail({ id }: { id: string }) {
                         <Copy className="h-3 w-3" /> Copy
                       </button>
                     </div>
-                    <pre className="whitespace-pre-wrap rounded-lg bg-slate-50 p-3 font-sans text-sm text-slate-700">
+                    <pre className="whitespace-pre-wrap rounded-lg bg-night-800/50 p-3 font-sans text-sm text-slate-200">
                       {lead.aiDraftReply}
                     </pre>
                   </div>
                 )}
-                <p className="mt-3 text-xs text-slate-400">
+                <p className="mt-3 text-xs text-slate-500">
                   AI suggestions — review before acting. A person always decides the status.
                 </p>
               </>
@@ -281,7 +281,7 @@ export function LeadDetail({ id }: { id: string }) {
                 Add note
               </Button>
             </form>
-            <ol className="mt-5 space-y-4 border-l border-slate-200 pl-4">
+            <ol className="mt-5 space-y-4 border-l border-white/10 pl-4">
               {lead.activities.map((a) => (
                 <li key={a.id} className="relative">
                   <span className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-brand-500" />
@@ -294,8 +294,8 @@ export function LeadDetail({ id }: { id: string }) {
                       ACTIVITY_LABEL[a.type]
                     )}
                   </p>
-                  {a.note && <p className="mt-0.5 whitespace-pre-wrap text-sm text-slate-600">{a.note}</p>}
-                  <p className="text-xs text-slate-400">
+                  {a.note && <p className="mt-0.5 whitespace-pre-wrap text-sm text-slate-300">{a.note}</p>}
+                  <p className="text-xs text-slate-500">
                     {a.user?.name ?? "System"} · {new Date(a.createdAt).toLocaleString()}
                   </p>
                 </li>
@@ -308,7 +308,7 @@ export function LeadDetail({ id }: { id: string }) {
           <Card className="p-5">
             <h2 className="font-semibold">Pipeline</h2>
             {transitions.length === 0 ? (
-              <p className="mt-3 text-sm text-slate-500">
+              <p className="mt-3 text-sm text-slate-400">
                 This lead is closed ({LEAD_STATUS_LABEL[lead.status].toLowerCase()}).
               </p>
             ) : (
@@ -321,7 +321,7 @@ export function LeadDetail({ id }: { id: string }) {
               </div>
             )}
             {lead.project && (
-              <div className="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">
+              <div className="mt-4 rounded-lg bg-emerald-500/10 p-3 text-sm text-emerald-300">
                 Converted to project{" "}
                 <Link href={`/admin/projects/${lead.project.id}`} className="font-medium underline">
                   {lead.project.title}
@@ -366,7 +366,7 @@ export function LeadDetail({ id }: { id: string }) {
         onClose={() => setPending(null)}
       >
         {pending === "WON" && (
-          <p className="mb-3 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800">
+          <p className="mb-3 rounded-lg bg-emerald-500/10 p-3 text-sm text-emerald-300">
             This will create a client record and a new project with default milestones.
           </p>
         )}
@@ -394,8 +394,8 @@ export function LeadDetail({ id }: { id: string }) {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-slate-500">{label}</dt>
-      <dd className="font-medium text-slate-800">{value}</dd>
+      <dt className="text-xs text-slate-400">{label}</dt>
+      <dd className="font-medium text-slate-100">{value}</dd>
     </div>
   );
 }

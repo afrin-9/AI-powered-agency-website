@@ -99,20 +99,20 @@ export function LeadsView() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Leads</h1>
-          <p className="text-sm text-slate-500">AI-triaged inquiries from the website</p>
+          <p className="text-sm text-slate-400">AI-triaged inquiries from the website</p>
         </div>
-        <div className="flex rounded-lg border border-slate-300 bg-white p-0.5">
+        <div className="flex rounded-lg border border-white/15 bg-night-900 p-0.5">
           <button
             onClick={() => setView("table")}
             aria-pressed={view === "table"}
-            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "table" && "bg-slate-100 font-medium")}
+            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "table" && "bg-night-800 font-medium")}
           >
             <List className="h-4 w-4" /> Table
           </button>
           <button
             onClick={() => setView("board")}
             aria-pressed={view === "board"}
-            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "board" && "bg-slate-100 font-medium")}
+            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "board" && "bg-night-800 font-medium")}
           >
             <LayoutGrid className="h-4 w-4" /> Board
           </button>
@@ -127,7 +127,7 @@ export function LeadsView() {
             setParam("q", q.trim());
           }}
         >
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -176,7 +176,7 @@ export function LeadsView() {
         <Card className={cn("overflow-hidden", loading && "opacity-60")}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500">
+              <thead className="bg-night-800/50 text-xs uppercase text-slate-400">
                 <tr>
                   <th className="px-4 py-3">Lead</th>
                   <th className="px-4 py-3">AI score</th>
@@ -186,23 +186,23 @@ export function LeadsView() {
                   <th className="px-4 py-3">Owner</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {data.items.map((l) => (
                   <tr
                     key={l.id}
-                    className="cursor-pointer hover:bg-slate-50"
+                    className="cursor-pointer hover:bg-night-800/60"
                     onClick={() => router.push(`/admin/leads/${l.id}`)}
                   >
                     <td className="max-w-xs px-4 py-3">
                       <Link
                         href={`/admin/leads/${l.id}`}
-                        className="font-medium text-slate-900 hover:text-brand-700"
+                        className="font-medium text-white hover:text-brand-200"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {l.name}
                       </Link>
-                      <p className="truncate text-xs text-slate-500">{l.company ?? l.email}</p>
-                      {l.aiSummary && <p className="mt-1 line-clamp-1 text-xs text-slate-600">{l.aiSummary}</p>}
+                      <p className="truncate text-xs text-slate-400">{l.company ?? l.email}</p>
+                      {l.aiSummary && <p className="mt-1 line-clamp-1 text-xs text-slate-300">{l.aiSummary}</p>}
                     </td>
                     <td className="px-4 py-3">
                       <Badge color={scoreColor(l.aiScore)}>{l.aiScore ?? "—"}</Badge>
@@ -211,21 +211,21 @@ export function LeadsView() {
                       {l.aiCategory && <Badge color="indigo">{CATEGORY_LABEL[l.aiCategory]}</Badge>}
                       {l.aiUrgency && <Badge color={URGENCY_COLOR[l.aiUrgency]}>{l.aiUrgency.toLowerCase()}</Badge>}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-700">
+                    <td className="whitespace-nowrap px-4 py-3 text-slate-200">
                       {l.estimatedMax ? `${money(l.estimatedMin)}–${money(l.estimatedMax)}` : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <Badge color={STATUS_COLOR[l.status]}>{LEAD_STATUS_LABEL[l.status]}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
-                      {l.assignedTo?.name ?? <span className="text-slate-400">Unassigned</span>}
+                    <td className="px-4 py-3 text-slate-300">
+                      {l.assignedTo?.name ?? <span className="text-slate-500">Unassigned</span>}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-sm text-slate-600">
+          <div className="flex items-center justify-between border-t border-white/5 px-4 py-3 text-sm text-slate-300">
             <span>
               {data.total} lead{data.total === 1 ? "" : "s"}
             </span>
@@ -249,23 +249,23 @@ export function LeadsView() {
           {STATUSES.map((s) => {
             const items = data.items.filter((l) => l.status === s);
             return (
-              <div key={s} className="min-w-60 rounded-xl bg-slate-100 p-3">
+              <div key={s} className="min-w-60 rounded-xl bg-night-800 p-3">
                 <div className="mb-3 flex items-center justify-between">
                   <Badge color={STATUS_COLOR[s]}>{LEAD_STATUS_LABEL[s]}</Badge>
-                  <span className="text-xs text-slate-500">{items.length}</span>
+                  <span className="text-xs text-slate-400">{items.length}</span>
                 </div>
                 <div className="space-y-2">
                   {items.map((l) => (
-                    <div key={l.id} className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+                    <div key={l.id} className="rounded-lg border border-white/10 bg-night-900 p-3 shadow-sm">
                       <div className="flex items-start justify-between gap-2">
-                        <Link href={`/admin/leads/${l.id}`} className="text-sm font-medium hover:text-brand-700">
+                        <Link href={`/admin/leads/${l.id}`} className="text-sm font-medium hover:text-brand-200">
                           {l.name}
                         </Link>
                         <Badge color={scoreColor(l.aiScore)}>{l.aiScore ?? "—"}</Badge>
                       </div>
-                      <p className="mt-1 text-xs text-slate-500">{l.service?.name ?? "No service"}</p>
+                      <p className="mt-1 text-xs text-slate-400">{l.service?.name ?? "No service"}</p>
                       {l.aiUrgency === "HIGH" && (
-                        <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
+                        <p className="mt-1 flex items-center gap-1 text-xs text-red-400">
                           <Sparkles className="h-3 w-3" /> High urgency
                         </p>
                       )}
@@ -278,8 +278,8 @@ export function LeadsView() {
                               className={cn(
                                 "rounded border px-2 py-0.5 text-xs",
                                 to === "LOST"
-                                  ? "border-red-200 text-red-600 hover:bg-red-50"
-                                  : "border-brand-200 text-brand-700 hover:bg-brand-50",
+                                  ? "border-red-500/30 text-red-400 hover:bg-red-500/10"
+                                  : "border-brand-400/25 text-brand-300 hover:bg-brand-500/10",
                               )}
                             >
                               → {LEAD_STATUS_LABEL[to]}
@@ -289,7 +289,7 @@ export function LeadsView() {
                       )}
                     </div>
                   ))}
-                  {items.length === 0 && <p className="py-4 text-center text-xs text-slate-400">Empty</p>}
+                  {items.length === 0 && <p className="py-4 text-center text-xs text-slate-500">Empty</p>}
                 </div>
               </div>
             );

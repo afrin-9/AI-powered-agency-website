@@ -116,7 +116,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
       <Card className="mt-10 p-8 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-500" />
         <h2 className="mt-4 text-2xl font-semibold">Thank you, {form.name.split(" ")[0]}!</h2>
-        <p className="mt-2 text-slate-600">
+        <p className="mt-2 text-slate-300">
           Your request has been received. Our team will contact you within one business day.
         </p>
         {done !== "no-estimate" && (
@@ -128,7 +128,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           </p>
         )}
         <div className="mt-6 flex justify-center gap-3">
-          <Link href="/" className="rounded-lg border border-slate-300 px-4 py-2 text-sm">
+          <Link href="/" className="rounded-lg border border-white/15 px-4 py-2 text-sm">
             Back to home
           </Link>
           <Button
@@ -272,20 +272,20 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
 
       <aside className="lg:sticky lg:top-24 lg:self-start">
         <Card className="p-6">
-          <p className="text-sm font-medium text-slate-500">Instant estimate</p>
+          <p className="text-sm font-medium text-slate-400">Instant estimate</p>
           {!serviceId ? (
-            <p className="mt-3 text-sm text-slate-600">
+            <p className="mt-3 text-sm text-slate-300">
               Pick a service to see an estimate. Not sure? Our team will advise.
             </p>
           ) : estimate ? (
             <div className={estimating ? "opacity-60 transition-opacity" : "transition-opacity"}>
-              <p className="mt-2 text-3xl font-bold text-slate-900">
-                {money(estimate.min)} <span className="text-lg font-normal text-slate-500">to</span>{" "}
+              <p className="mt-2 text-3xl font-bold text-white">
+                {money(estimate.min)} <span className="text-lg font-normal text-slate-400">to</span>{" "}
                 {money(estimate.max)}
               </p>
-              <p className="mt-2 text-sm text-slate-600">Typical delivery: ~{estimate.typicalWeeks} weeks</p>
+              <p className="mt-2 text-sm text-slate-300">Typical delivery: ~{estimate.typicalWeeks} weeks</p>
               {selected && (
-                <ul className="mt-4 space-y-1 border-t border-slate-100 pt-4 text-xs text-slate-500">
+                <ul className="mt-4 space-y-1 border-t border-white/5 pt-4 text-xs text-slate-400">
                   <li>
                     Base ({selected.name}): {money(selected.basePrice)}
                   </li>
@@ -303,9 +303,9 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
               <div className="skeleton h-4 w-28" />
             </div>
           ) : (
-            <p className="mt-3 text-sm text-red-600">Couldn&apos;t load an estimate. You can still send your request.</p>
+            <p className="mt-3 text-sm text-red-400">Couldn&apos;t load an estimate. You can still send your request.</p>
           )}
-          <p className="mt-4 text-xs text-slate-400">
+          <p className="mt-4 text-xs text-slate-500">
             Estimates are indicative; the final quote follows a free discovery call.
           </p>
         </Card>
