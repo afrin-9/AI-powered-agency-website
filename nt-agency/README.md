@@ -4,6 +4,8 @@ A full-stack concept website for a software agency (NT Tech Innovation). Visitor
 
 > Concept project with sample content. It is not the agency's official website.
 
+**New to the app?** Read the illustrated [User Manual](manual/USER_MANUAL.md): a step-by-step guide to the website and the team dashboard, with screenshots of every screen.
+
 ## Contents
 
 1. [Problem and solution](#1-problem-and-solution)
