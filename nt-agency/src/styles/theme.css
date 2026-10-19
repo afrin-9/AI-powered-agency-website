@@ -1,0 +1,30 @@
+/* Design tokens. Palette taken from the Nixo mascot artwork:
+   night-purple backgrounds, glowing violet, soft lavender. */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #2e1065;
+
+  --color-night-700: #2b1468;
+  --color-night-800: #1a0b45;
+  --color-night-900: #0e0630;
+  --color-night-950: #05021a;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Utilities such as `animate-page-in`; keyframes live in animations.css. */
+  --animate-page-in: page-in 0.5s var(--ease-out-soft) both;
+  --animate-fade-in: fade-in 0.2s ease-out both;
+  --animate-pop-in: pop-in 0.25s var(--ease-out-soft) both;
+  --animate-slide-up: slide-up 0.3s var(--ease-out-soft) both;
+}

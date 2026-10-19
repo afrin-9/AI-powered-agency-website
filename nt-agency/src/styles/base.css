@@ -1,0 +1,26 @@
+/* Page-wide defaults. Dark theme only: native controls (date pickers, selects,
+   scrollbars) render dark too. */
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-night-950);
+  color: var(--color-slate-100);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgb(124 58 237 / 0.45);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-400);
+  outline-offset: 2px;
+}

@@ -1,0 +1,66 @@
+/* Reusable visual effects: surfaces, glows, gradients and masks. */
+
+/* Loading placeholder blocks */
+.skeleton {
+  @apply animate-pulse rounded-md bg-night-800;
+}
+
+/* Glassy panel used for cards on the public site. */
+.surface {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.045), rgb(255 255 255 / 0.015));
+  border: 1px solid rgb(255 255 255 / 0.08);
+}
+
+/* Card whose border lights up violet on hover. */
+.glow-card {
+  position: relative;
+  transition:
+    transform 0.3s var(--ease-out-soft),
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.glow-card:hover {
+  transform: translateY(-3px);
+  border-color: rgb(167 139 250 / 0.35);
+  box-shadow:
+    0 0 0 1px rgb(167 139 250 / 0.12),
+    0 18px 40px -18px rgb(124 58 237 / 0.55);
+}
+
+/* Faint grid behind heroes, fading out towards the edges. */
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+}
+
+/* Soft neon glow used on headings over dark backgrounds, like the "Meet Nixo" lettering. */
+.glow-text {
+  text-shadow:
+    0 0 18px rgb(167 139 250 / 0.45),
+    0 0 42px rgb(124 58 237 / 0.3);
+}
+
+.glow-ring {
+  box-shadow:
+    0 0 0 1px rgb(167 139 250 / 0.35),
+    0 0 28px rgb(124 58 237 / 0.45);
+}
+
+.text-gradient {
+  background: linear-gradient(180deg, #fff 20%, var(--color-brand-300));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fades the edges of the mascot render into the page background. */
+.nixo-fade {
+  mask-image:
+    linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+    linear-gradient(to bottom, transparent, #000 8%, #000 82%, transparent);
+  mask-composite: intersect;
+}
