@@ -1,10 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { cn } from "@/components/ui";
-
-/** Event the chat widget listens for, so any button on the page can open Nixo. */
-export const OPEN_NIXO_EVENT = "nixo:open";
+import { cn } from "@/lib/utils";
+import { OPEN_NIXO_EVENT } from "@/constants/app";
 
 export function openNixoChat() {
   window.dispatchEvent(new Event(OPEN_NIXO_EVENT));

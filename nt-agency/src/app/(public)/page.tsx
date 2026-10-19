@@ -1,62 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  CalendarCheck,
-  Globe2,
-  LifeBuoy,
-  Layers,
-  ReceiptText,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { Reveal, money } from "@/components/ui";
-import { CATEGORY_ICON } from "@/components/public/categoryIcon";
+import { CATEGORY_ICON } from "@/constants/icons";
 import { AskNixoButton, NixoAvatar } from "@/components/public/Nixo";
 import { Eyebrow, SectionHeading } from "@/components/public/Section";
+import { HERO_FACTS, PROCESS_STEPS, WHY_US } from "@/data/home";
 
 export const dynamic = "force-dynamic";
-
-const PROCESS = [
-  { title: "Discovery", text: "We map your goals, users and scope in a free consultation." },
-  { title: "Design", text: "Wireframes and clickable prototypes before any code is written." },
-  { title: "Build", text: "Short sprints with weekly demos, so you always see progress." },
-  { title: "Launch", text: "Deployment, handover training and 30 days of free support." },
-];
-
-const WHY = [
-  {
-    icon: ReceiptText,
-    title: "Transparent pricing",
-    text: "A base price plus a fixed cost per feature. See your range instantly, before any call.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "Weekly demos",
-    text: "You see working software every week, not a big reveal at the end.",
-  },
-  {
-    icon: LifeBuoy,
-    title: "30 days of support",
-    text: "Every launch includes a month of free bug fixes, with maintenance plans after.",
-  },
-  {
-    icon: Globe2,
-    title: "Local and international",
-    text: "We work in English or Bangla and accept bank transfer, bKash and international payments.",
-  },
-  {
-    icon: Sparkles,
-    title: "AI where it helps",
-    text: "Chatbots, forecasting and LLM integrations that solve a real problem, not a buzzword.",
-  },
-  {
-    icon: Layers,
-    title: "Modern, proven stack",
-    text: "Next.js, Node, Flutter, Python and PostgreSQL, deployed on AWS or Vercel.",
-  },
-];
 
 export default async function HomePage() {
   const [services, projects] = await Promise.all([
@@ -73,8 +25,8 @@ export default async function HomePage() {
   const facts = [
     { value: String(services.length), label: "Core services" },
     { value: minPrice ? money(minPrice) : "—", label: "Projects from" },
-    { value: "1 day", label: "Reply time" },
-    { value: "30 days", label: "Free support" },
+    { value: HERO_FACTS.replyTime, label: "Reply time" },
+    { value: HERO_FACTS.freeSupport, label: "Free support" },
   ];
 
   return (
@@ -195,7 +147,7 @@ export default async function HomePage() {
         <div className="relative mx-auto max-w-6xl px-4">
           <SectionHeading eyebrow="02 — Process" title="A simple process, with no surprises." />
           <div className="grid gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/6 sm:grid-cols-2 lg:grid-cols-4">
-            {PROCESS.map((p, i) => (
+            {PROCESS_STEPS.map((p, i) => (
               <Reveal key={p.title} delay={i * 100} className="bg-night-950/90 p-6 sm:p-8">
                 <p className="font-mono text-xs text-brand-300/80">{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-10 text-lg font-medium text-white">{p.title}</h3>
@@ -210,7 +162,7 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-24">
         <SectionHeading eyebrow="03 — Why NT Tech" title="Built for small teams with big plans." />
         <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-          {WHY.map((w, i) => (
+          {WHY_US.map((w, i) => (
             <Reveal key={w.title} delay={(i % 3) * 90} className="flex gap-4">
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4">
                 <w.icon className="h-4.5 w-4.5 text-brand-300" />

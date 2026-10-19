@@ -3,25 +3,18 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Bot,
-  Copy,
-  MessageSquareText,
-  Plus,
-  RefreshCw,
-  Trash2,
-  UserRound,
-  Workflow,
-} from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Copy, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { ActivityType, AiSource, Category, LeadStatus, Role, Timeline, Urgency } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { LEAD_STATUS_LABEL, nextStatuses } from "@/lib/leadWorkflow";
-import { CATEGORY_LABEL, STATUS_COLOR, TIMELINE_LABEL, URGENCY_COLOR } from "@/lib/labels";
+import { ACTIVITY_LABEL, CATEGORY_LABEL, TIMELINE_LABEL, LEAD_PROGRESS_STEPS } from "@/constants/labels";
+import { ACTIVITY_ICON } from "@/constants/icons";
+import { STATUS_COLOR, URGENCY_COLOR } from "@/constants/colors";
 import { Badge, Button, Card, ErrorState, Modal, Select, Spinner, Textarea, cn, money } from "@/components/ui";
 import { NixoAvatar } from "@/components/public/Nixo";
+import { DetailRow } from "@/components/admin/DetailRow";
+import { ScoreRing } from "@/components/admin/ScoreRing";
 
 interface Activity {
   id: string;
@@ -58,22 +51,6 @@ interface Lead {
   project: { id: string; title: string } | null;
   activities: Activity[];
 }
-
-const ACTIVITY_ICON: Record<ActivityType, typeof Bot> = {
-  CREATED: Plus,
-  STATUS_CHANGE: Workflow,
-  NOTE: MessageSquareText,
-  ASSIGN: UserRound,
-  AI_TRIAGE: Bot,
-};
-
-const ACTIVITY_LABEL: Record<ActivityType, string> = {
-  CREATED: "Lead created",
-  STATUS_CHANGE: "Status changed",
-  NOTE: "Note",
-  ASSIGN: "Assignment",
-  AI_TRIAGE: "AI triage",
-};
 
 export function LeadDetail({ id }: { id: string }) {
   const router = useRouter();
@@ -152,10 +129,9 @@ export function LeadDetail({ id }: { id: string }) {
     }
   }
 
-  const STEPS: LeadStatus[] = ["NEW", "CONTACTED", "PROPOSAL_SENT", "WON"];
   // For a lost lead, show how far it got before it was lost.
   const lostFrom = lead.activities.find((a) => a.toStatus === "LOST")?.fromStatus ?? "NEW";
-  const reached = STEPS.indexOf(lead.status === "LOST" ? lostFrom : lead.status);
+  const reached = LEAD_PROGRESS_STEPS.indexOf(lead.status === "LOST" ? lostFrom : lead.status);
 
   return (
     <div className="space-y-6">
@@ -214,7 +190,7 @@ export function LeadDetail({ id }: { id: string }) {
 
       {/* Stage progress */}
       <div className="grid grid-cols-4 gap-1.5">
-        {STEPS.map((step, i) => {
+        {LEAD_PROGRESS_STEPS.map((step, i) => {
           const done = i <= reached;
           const lost = lead.status === "LOST";
           return (
@@ -398,10 +374,10 @@ export function LeadDetail({ id }: { id: string }) {
           <Card className="p-5">
             <h2 className="text-xs font-medium uppercase tracking-wider text-slate-500">Details</h2>
             <dl className="mt-4 space-y-3.5 text-sm">
-              <Row label="Status">
+              <DetailRow label="Status">
                 <Badge color={STATUS_COLOR[lead.status]}>{LEAD_STATUS_LABEL[lead.status]}</Badge>
-              </Row>
-              <Row label="Owner">
+              </DetailRow>
+              <DetailRow label="Owner">
                 <Select
                   className="h-8 w-40 py-0 text-xs"
                   aria-label="Owner"
@@ -426,16 +402,16 @@ export function LeadDetail({ id }: { id: string }) {
                     </option>
                   ))}
                 </Select>
-              </Row>
-              <Row label="Service">{lead.service?.name ?? "Not selected"}</Row>
-              <Row label="Features">{lead.features}</Row>
-              <Row label="Timeline">{TIMELINE_LABEL[lead.timeline]}</Row>
-              <Row label="Budget">{money(lead.budget)}</Row>
-              <Row label="Estimate">
+              </DetailRow>
+              <DetailRow label="Service">{lead.service?.name ?? "Not selected"}</DetailRow>
+              <DetailRow label="Features">{lead.features}</DetailRow>
+              <DetailRow label="Timeline">{TIMELINE_LABEL[lead.timeline]}</DetailRow>
+              <DetailRow label="Budget">{money(lead.budget)}</DetailRow>
+              <DetailRow label="Estimate">
                 {lead.estimatedMax ? `${money(lead.estimatedMin)} – ${money(lead.estimatedMax)}` : "—"}
-              </Row>
-              <Row label="Phone">{lead.phone ?? "—"}</Row>
-              <Row label="Received">{new Date(lead.createdAt).toLocaleDateString()}</Row>
+              </DetailRow>
+              <DetailRow label="Phone">{lead.phone ?? "—"}</DetailRow>
+              <DetailRow label="Received">{new Date(lead.createdAt).toLocaleDateString()}</DetailRow>
             </dl>
           </Card>
         </aside>
@@ -472,41 +448,3 @@ export function LeadDetail({ id }: { id: string }) {
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <dt className="text-slate-500">{label}</dt>
-      <dd className="text-right text-slate-200">{children}</dd>
-    </div>
-  );
-}
-
-/** Circular 0–100 score gauge that animates its arc in. */
-function ScoreRing({ score, shown }: { score: number; shown: boolean }) {
-  const r = 30;
-  const c = 2 * Math.PI * r;
-  const color = score >= 70 ? "#34d399" : score >= 45 ? "#fbbf24" : "#f87171";
-  return (
-    <div className="relative grid h-20 w-20 place-items-center">
-      <svg viewBox="0 0 72 72" className="absolute inset-0 -rotate-90">
-        <circle cx="36" cy="36" r={r} fill="none" stroke="rgb(255 255 255 / 0.08)" strokeWidth="6" />
-        <circle
-          cx="36"
-          cy="36"
-          r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={shown ? c * (1 - score / 100) : c}
-          className="transition-[stroke-dashoffset] duration-1000 ease-out"
-        />
-      </svg>
-      <div className="text-center">
-        <p className="text-xl font-semibold leading-none text-white">{score}</p>
-        <p className="mt-0.5 text-[10px] text-slate-500">score</p>
-      </div>
-    </div>
-  );
-}

@@ -3,7 +3,7 @@
 import type { Category } from "@prisma/client";
 import { ResourceManager, type FieldDef } from "@/components/admin/ResourceManager";
 import { Badge, money } from "@/components/ui";
-import { CATEGORY_LABEL } from "@/lib/labels";
+import { CATEGORY_LABEL } from "@/constants/labels";
 
 type Service = {
   id: string;

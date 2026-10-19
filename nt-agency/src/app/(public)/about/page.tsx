@@ -1,19 +1,12 @@
 import { prisma } from "@/lib/db";
-import { FAQ } from "@/lib/faq";
+import { FAQ } from "@/data/faq";
 import { Reveal } from "@/components/ui";
+import { initials } from "@/lib/utils";
 import { PageIntro, SectionHeading } from "@/components/public/Section";
 import { FaqList } from "@/components/public/FaqList";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "About & FAQ" };
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2);
-}
 
 export default async function AboutPage() {
   const team = await prisma.teamMember.findMany({ orderBy: { position: "asc" } });

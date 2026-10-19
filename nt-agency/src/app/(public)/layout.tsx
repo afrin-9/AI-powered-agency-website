@@ -1,26 +1,9 @@
 import Link from "next/link";
-import { Logo, Navbar } from "@/components/public/Navbar";
+import { Navbar } from "@/components/public/Navbar";
+import { Logo } from "@/components/public/Logo";
 import { ChatWidget } from "@/components/public/ChatWidget";
 import { AskNixoButton } from "@/components/public/Nixo";
-
-const FOOTER_LINKS = [
-  {
-    title: "Services",
-    links: [
-      { href: "/services", label: "All services" },
-      { href: "/quote", label: "Instant estimate" },
-      { href: "/portfolio", label: "Our work" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { href: "/about", label: "About us" },
-      { href: "/about#faq", label: "FAQ" },
-      { href: "/login", label: "Team login" },
-    ],
-  },
-];
+import { FOOTER_LINKS } from "@/data/navigation";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "../db";
-import { FAQ } from "../faq";
+import { FAQ } from "@/data/faq";
 import { AI_MODEL, getAnthropic } from "./client";
 
 export interface ChatTurn {

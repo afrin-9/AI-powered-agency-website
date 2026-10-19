@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import type { ProjectStatus } from "@prisma/client";
 import { ResourceManager } from "@/components/admin/ResourceManager";
+import { MilestoneProgress } from "@/components/admin/MilestoneProgress";
 import { Badge, money } from "@/components/ui";
-import { PROJECT_STATUS_COLOR, PROJECT_STATUS_LABEL } from "@/lib/labels";
+import { PROJECT_STATUS_LABEL } from "@/constants/labels";
+import { PROJECT_STATUS_COLOR } from "@/constants/colors";
 
 type Project = {
   id: string;
@@ -19,21 +21,6 @@ type Project = {
 };
 
 type Option = { value: string; label: string };
-
-function Progress({ milestones }: { milestones: Array<{ done: boolean }> }) {
-  const done = milestones.filter((m) => m.done).length;
-  const pct = milestones.length ? Math.round((done / milestones.length) * 100) : 0;
-  return (
-    <div className="w-28">
-      <div className="h-1.5 rounded-full bg-night-800">
-        <div className="h-1.5 rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
-      </div>
-      <p className="mt-1 text-xs text-slate-400">
-        {done}/{milestones.length} milestones
-      </p>
-    </div>
-  );
-}
 
 export function ProjectsManager({
   isAdmin,
@@ -88,7 +75,7 @@ export function ProjectsManager({
           header: "Status",
           cell: (p) => <Badge color={PROJECT_STATUS_COLOR[p.status]}>{PROJECT_STATUS_LABEL[p.status]}</Badge>,
         },
-        { header: "Progress", cell: (p) => <Progress milestones={p.milestones} /> },
+        { header: "Progress", cell: (p) => <MilestoneProgress milestones={p.milestones} /> },
         { header: "Budget", cell: (p) => money(p.budget) },
         {
           header: "Portfolio",

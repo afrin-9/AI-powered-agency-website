@@ -5,16 +5,13 @@ import Link from "next/link";
 import { Loader2, Send, X } from "lucide-react";
 import { api, FetchError } from "@/lib/fetcher";
 import { cn } from "@/components/ui";
-import { NixoAvatar, OPEN_NIXO_EVENT } from "./Nixo";
+import { CHAT_HISTORY_LIMIT, CHAT_MAX_MESSAGE_LENGTH, OPEN_NIXO_EVENT } from "@/constants/app";
+import { CHAT_GREETING, CHAT_SUGGESTIONS } from "@/data/chat";
+import { NixoAvatar } from "./Nixo";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const MAX_LENGTH = 1000;
-const SUGGESTIONS = ["Do you build mobile apps?", "How is pricing calculated?", "What is your process?"];
-const GREETING: Msg = {
-  role: "assistant",
-  content: "Hi, I'm Nixo! 👋 Ask me about NT Tech's services, pricing, process or past projects.",
-};
+const GREETING: Msg = { role: "assistant", content: CHAT_GREETING };
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -38,8 +35,8 @@ export function ChatWidget() {
   async function send(text: string) {
     const content = text.trim();
     if (!content || loading) return;
-    if (content.length > MAX_LENGTH) {
-      setError(`Please keep messages under ${MAX_LENGTH} characters.`);
+    if (content.length > CHAT_MAX_MESSAGE_LENGTH) {
+      setError(`Please keep messages under ${CHAT_MAX_MESSAGE_LENGTH} characters.`);
       return;
     }
     const next: Msg[] = [...messages, { role: "user", content }];
@@ -49,7 +46,7 @@ export function ChatWidget() {
     setLoading(true);
     try {
       // Send only the real conversation (not the greeting) and cap the history length.
-      const history = next.filter((m) => m !== GREETING).slice(-10);
+      const history = next.filter((m) => m !== GREETING).slice(-CHAT_HISTORY_LIMIT);
       const res = await api<{ reply: string }>("/api/chat", { method: "POST", json: { messages: history } });
       setMessages([...next, { role: "assistant", content: res.reply }]);
     } catch (err) {
@@ -104,7 +101,7 @@ export function ChatWidget() {
             {error && <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-300">{error}</p>}
             {messages.length === 1 && (
               <div className="flex flex-wrap gap-2 pl-8">
-                {SUGGESTIONS.map((s) => (
+                {CHAT_SUGGESTIONS.map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
@@ -129,7 +126,7 @@ export function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask Nixo a question..."
-              maxLength={MAX_LENGTH}
+              maxLength={CHAT_MAX_MESSAGE_LENGTH}
               className="flex-1 rounded-lg border border-white/15 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40"
               aria-label="Your message"
             />

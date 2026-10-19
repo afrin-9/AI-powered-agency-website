@@ -3,61 +3,11 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  ArrowUpRight,
-  Briefcase,
-  Building2,
-  Inbox,
-  Layers,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  UserCog,
-  Users,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, LogOut, Menu, X } from "lucide-react";
 import type { Role } from "@prisma/client";
-import { cn } from "@/components/ui";
+import { cn, initials } from "@/lib/utils";
+import { ADMIN_NAV } from "@/data/navigation";
 import { api } from "@/lib/fetcher";
-
-type NavItem = { href: string; label: string; icon: typeof Inbox; adminOnly?: boolean };
-
-const GROUPS: Array<{ title: string; items: NavItem[] }> = [
-  {
-    title: "Sales",
-    items: [
-      { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/admin/leads", label: "Leads", icon: Inbox },
-    ],
-  },
-  {
-    title: "Delivery",
-    items: [
-      { href: "/admin/projects", label: "Projects", icon: Briefcase },
-      { href: "/admin/clients", label: "Clients", icon: Building2 },
-    ],
-  },
-  {
-    title: "Website",
-    items: [
-      { href: "/admin/services", label: "Services", icon: Layers },
-      { href: "/admin/team", label: "Team page", icon: Users },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [{ href: "/admin/users", label: "Users", icon: UserCog, adminOnly: true }],
-  },
-];
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export function AdminNav({ user }: { user: { name: string; role: Role } }) {
   const pathname = usePathname();
@@ -73,7 +23,7 @@ export function AdminNav({ user }: { user: { name: string; role: Role } }) {
   }
 
   const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
-  const groups = GROUPS.map((g) => ({ ...g, items: g.items.filter((i) => !i.adminOnly || user.role === "ADMIN") })).filter(
+  const groups = ADMIN_NAV.map((g) => ({ ...g, items: g.items.filter((i) => !i.adminOnly || user.role === "ADMIN") })).filter(
     (g) => g.items.length > 0,
   );
 

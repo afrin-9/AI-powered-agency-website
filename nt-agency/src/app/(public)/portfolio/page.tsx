@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { EmptyState, Reveal } from "@/components/ui";
-import { CATEGORY_ICON } from "@/components/public/categoryIcon";
+import { CATEGORY_ICON } from "@/constants/icons";
 import { Eyebrow, PageIntro } from "@/components/public/Section";
 
 export const dynamic = "force-dynamic";

@@ -6,7 +6,8 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { ProjectStatus } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
-import { PROJECT_STATUS_COLOR, PROJECT_STATUS_LABEL } from "@/lib/labels";
+import { PROJECT_STATUS_LABEL } from "@/constants/labels";
+import { PROJECT_STATUS_COLOR } from "@/constants/colors";
 import { Badge, Button, Card, ErrorState, Input, Spinner, cn, money } from "@/components/ui";
 
 interface Milestone {

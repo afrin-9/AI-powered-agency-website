@@ -1,28 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, CircleDollarSign, Inbox, Target, Trophy } from "lucide-react";
-import type { LeadStatus } from "@prisma/client";
 import { getPipelineStats } from "@/lib/leads";
 import { LEAD_STATUS_LABEL } from "@/lib/leadWorkflow";
-import { STATUS_COLOR, scoreColor } from "@/lib/labels";
+import { STAGE_BAR, STATUS_COLOR, scoreColor } from "@/constants/colors";
+import { LEAD_STAGES } from "@/constants/labels";
+import { greeting } from "@/lib/utils";
+import { KpiCard } from "@/components/admin/KpiCard";
 import { aiEnabled } from "@/lib/ai/client";
 import { getSession } from "@/lib/auth";
 import { Badge, Card, PageHeader, Reveal, money } from "@/components/ui";
 import { NixoAvatar } from "@/components/public/Nixo";
-
-const STAGES: LeadStatus[] = ["NEW", "CONTACTED", "PROPOSAL_SENT", "WON", "LOST"];
-
-const STAGE_BAR: Record<LeadStatus, string> = {
-  NEW: "from-blue-500 to-blue-400",
-  CONTACTED: "from-amber-500 to-amber-400",
-  PROPOSAL_SENT: "from-violet-500 to-violet-400",
-  WON: "from-emerald-500 to-emerald-400",
-  LOST: "from-red-500/80 to-red-400/80",
-};
-
-function greeting() {
-  const h = new Date().getHours();
-  return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-}
 
 export default async function DashboardPage() {
   const [stats, session] = await Promise.all([getPipelineStats(), getSession()]);
@@ -56,16 +43,7 @@ export default async function DashboardPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((k, i) => (
           <Reveal key={k.label} delay={i * 70}>
-            <Card className="h-full p-5 transition-colors duration-300 hover:border-white/15">
-              <div className="flex items-start justify-between">
-                <p className="text-sm text-slate-400">{k.label}</p>
-                <span className="grid h-9 w-9 place-items-center rounded-lg border border-brand-400/20 bg-brand-500/10">
-                  <k.icon className="h-4 w-4 text-brand-300" />
-                </span>
-              </div>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-white">{k.value}</p>
-              <p className="mt-1 text-xs text-slate-500">{k.hint}</p>
-            </Card>
+            <KpiCard {...k} />
           </Reveal>
         ))}
       </div>
@@ -78,7 +56,7 @@ export default async function DashboardPage() {
               <span className="text-xs text-slate-500">{stats.total} leads</span>
             </div>
             <div className="mt-6 space-y-4">
-              {STAGES.map((s) => {
+              {LEAD_STAGES.map((s) => {
                 const count = stats.counts[s] ?? 0;
                 const pct = stats.total ? (count / stats.total) * 100 : 0;
                 return (

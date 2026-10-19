@@ -1,3 +1,4 @@
+import { CHAT_MAX_MESSAGE_LENGTH } from "@/constants/app";
 import { z } from "zod";
 
 const trimmed = (min: number, max: number) =>
@@ -79,7 +80,7 @@ export const chatSchema = z.object({
     .array(
       z.object({
         role: z.enum(["user", "assistant"]),
-        content: z.string().trim().min(1).max(1000),
+        content: z.string().trim().min(1).max(CHAT_MAX_MESSAGE_LENGTH),
       }),
     )
     .min(1)

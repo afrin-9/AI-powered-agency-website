@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { EmptyState, Reveal, money } from "@/components/ui";
-import { CATEGORY_ICON } from "@/components/public/categoryIcon";
+import { CATEGORY_ICON } from "@/constants/icons";
 import { PageIntro } from "@/components/public/Section";
 
 export const dynamic = "force-dynamic";

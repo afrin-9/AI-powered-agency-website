@@ -1,19 +1,14 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { Bot, KanbanSquare, Sparkles } from "lucide-react";
 import { getSession } from "@/lib/auth";
-import { Logo } from "@/components/public/Navbar";
+import { Logo } from "@/components/public/Logo";
+import { LOGIN_POINTS } from "@/data/auth";
+import { DEMO_ACCOUNTS } from "@/data/demoAccounts";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Team login" };
-
-const POINTS = [
-  { icon: Sparkles, text: "Every inquiry scored and summarised by Nixo" },
-  { icon: KanbanSquare, text: "Move leads from first contact to signed project" },
-  { icon: Bot, text: "Draft replies ready to review and send" },
-];
 
 export default async function LoginPage() {
   if (await getSession()) redirect("/admin");
@@ -40,7 +35,7 @@ export default async function LoginPage() {
             />
           </div>
           <ul className="space-y-3">
-            {POINTS.map((p, i) => (
+            {LOGIN_POINTS.map((p, i) => (
               <li
                 key={p.text}
                 className="flex animate-slide-up items-center gap-3 text-sm text-slate-300"
@@ -73,12 +68,11 @@ export default async function LoginPage() {
           </Suspense>
           <div className="mt-8 rounded-xl border border-dashed border-white/10 bg-white/2 p-4 text-xs text-slate-400">
             <p className="mb-1.5 font-mono uppercase tracking-[0.18em] text-slate-500">Demo accounts</p>
-            <p>
-              Admin · <span className="text-slate-200">admin@demo.com</span> / Admin12345
-            </p>
-            <p>
-              Staff · <span className="text-slate-200">staff@demo.com</span> / Staff12345
-            </p>
+            {DEMO_ACCOUNTS.map((a) => (
+              <p key={a.email}>
+                {a.role === "ADMIN" ? "Admin" : "Staff"} · <span className="text-slate-200">{a.email}</span> / {a.password}
+              </p>
+            ))}
           </div>
         </div>
       </div>

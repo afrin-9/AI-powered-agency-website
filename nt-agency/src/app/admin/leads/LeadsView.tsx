@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import type { Category, LeadStatus, Urgency } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { LEAD_STATUS_LABEL, nextStatuses } from "@/lib/leadWorkflow";
-import { CATEGORY_LABEL, STATUS_COLOR, URGENCY_COLOR, scoreColor } from "@/lib/labels";
+import { CATEGORY_LABEL, LEAD_STAGES } from "@/constants/labels";
+import { STAGE_DOT, STATUS_COLOR, URGENCY_COLOR, scoreColor } from "@/constants/colors";
+import { LEADS_PAGE_SIZE } from "@/constants/app";
 import { Badge, Button, Card, EmptyState, ErrorState, Input, PageHeader, Select, Spinner, cn, money } from "@/components/ui";
 
 interface LeadRow {
@@ -34,21 +36,11 @@ interface LeadPage {
   pageSize: number;
 }
 
-const STATUSES: LeadStatus[] = ["NEW", "CONTACTED", "PROPOSAL_SENT", "WON", "LOST"];
-
-const STAGE_DOT: Record<LeadStatus, string> = {
-  NEW: "bg-blue-400",
-  CONTACTED: "bg-amber-400",
-  PROPOSAL_SENT: "bg-violet-400",
-  WON: "bg-emerald-400",
-  LOST: "bg-red-400",
-};
-
 export function LeadsView() {
   const router = useRouter();
   const params = useSearchParams();
   const rawStatus = params.get("status");
-  const status = STATUSES.includes(rawStatus as LeadStatus) ? (rawStatus as LeadStatus) : "";
+  const status = LEAD_STAGES.includes(rawStatus as LeadStatus) ? (rawStatus as LeadStatus) : "";
   const sort = params.get("sort") === "newest" ? "newest" : "score";
   const search = params.get("q") ?? "";
 
@@ -72,7 +64,7 @@ export function LeadsView() {
     setError(null);
     try {
       // The board shows every stage at once, so it fetches one large page without a status filter.
-      const qs = new URLSearchParams({ sort, page: String(page), pageSize: view === "board" ? "100" : "15" });
+      const qs = new URLSearchParams({ sort, page: String(page), pageSize: String(LEADS_PAGE_SIZE[view]) });
       if (status && view === "table") qs.set("status", status);
       if (search) qs.set("q", search);
       setData(await api<LeadPage>(`/api/admin/leads?${qs}`));
@@ -155,7 +147,7 @@ export function LeadsView() {
             aria-label="Filter by status"
           >
             <option value="">All statuses</option>
-            {STATUSES.map((s) => (
+            {LEAD_STAGES.map((s) => (
               <option key={s} value={s}>
                 {LEAD_STATUS_LABEL[s]}
               </option>
@@ -256,7 +248,7 @@ export function LeadsView() {
         </Card>
       ) : (
         <div className={cn("grid animate-fade-in gap-3 overflow-x-auto pb-2 transition-opacity md:grid-cols-3 xl:grid-cols-5", loading && "opacity-60")}>
-          {STATUSES.map((s) => {
+          {LEAD_STAGES.map((s) => {
             const items = data.items.filter((l) => l.status === s);
             return (
               <div key={s} className="min-w-60 rounded-2xl border border-white/5 bg-white/2 p-2.5">

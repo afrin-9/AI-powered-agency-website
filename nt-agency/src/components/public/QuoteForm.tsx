@@ -6,8 +6,10 @@ import { CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Timeline } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
-import { TIMELINE_LABEL } from "@/lib/labels";
+import { TIMELINE_LABEL } from "@/constants/labels";
 import { Button, Card, Field, Input, Select, Textarea, cn, money } from "@/components/ui";
+import { ESTIMATE_DEBOUNCE_MS, QUOTE_FEATURES } from "@/constants/app";
+import { FormStep } from "./FormStep";
 
 interface ServiceOption {
   id: string;
@@ -25,7 +27,7 @@ const initial = { name: "", email: "", phone: "", company: "", budget: "", messa
 export function QuoteForm({ services, initialServiceId }: { services: ServiceOption[]; initialServiceId?: string }) {
   const [form, setForm] = useState(initial);
   const [serviceId, setServiceId] = useState(initialServiceId ?? services[0]?.id ?? "");
-  const [features, setFeatures] = useState(3);
+  const [features, setFeatures] = useState<number>(QUOTE_FEATURES.default);
   const [timeline, setTimeline] = useState<Timeline>("NORMAL");
   const [estimate, setEstimate] = useState<Estimate | null>(null);
   const [estimating, setEstimating] = useState(false);
@@ -54,7 +56,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
       } finally {
         if (!ctrl.signal.aborted) setEstimating(false);
       }
-    }, 250);
+    }, ESTIMATE_DEBOUNCE_MS);
     return () => {
       clearTimeout(timer);
       ctrl.abort();
@@ -232,8 +234,8 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           <input
             id="features"
             type="range"
-            min={1}
-            max={20}
+            min={QUOTE_FEATURES.min}
+            max={QUOTE_FEATURES.max}
             value={features}
             onChange={(e) => setFeatures(Number(e.target.value))}
             className="w-full cursor-pointer accent-brand-500"
@@ -333,13 +335,3 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
   );
 }
 
-function FormStep({ n, title }: { n: number; title: string }) {
-  return (
-    <div className="flex items-center gap-3 border-b border-white/5 pb-3">
-      <span className="grid h-6 w-6 place-items-center rounded-full bg-brand-500/15 font-mono text-xs text-brand-200 ring-1 ring-brand-400/30">
-        {n}
-      </span>
-      <h2 className="text-sm font-medium text-white">{title}</h2>
-    </div>
-  );
-}
