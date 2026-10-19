@@ -84,10 +84,18 @@ src/
 ├─ app/(public)/      Home, services, portfolio, about, quote
 ├─ app/admin/         Dashboard, leads (table/board/detail), projects, clients, services, team, users
 ├─ app/api/           Public, auth and admin route handlers
-├─ components/        UI kit, public components, admin components
-├─ lib/               Business logic, auth, validation, AI
+├─ components/
+│  ├─ ui/             UI kit, one file per component (Button, Form, Card, Badge, Modal, Reveal...)
+│  ├─ public/         Website components (Navbar, Logo, QuoteForm, ChatWidget, Nixo...)
+│  └─ admin/          Admin components (AdminNav, ResourceManager, KpiCard, ScoreRing...)
+├─ constants/         Labels, status colours, icons and app-wide values
+├─ data/              Site copy: home sections, navigation, FAQ, chat, demo accounts
+├─ styles/            CSS split by concern: theme, base, animations, effects, forms
+├─ lib/               Business logic, auth, validation, AI, utils
 └─ middleware.ts
-prisma/               Schema, migrations, seed
+prisma/
+├─ data/              Seed records: services, team, portfolio, leads
+└─ seed.ts            Writes the seed records to the database
 tests/                Unit and integration tests
 eval/                 AI evaluation dataset, runner and results
 ```
