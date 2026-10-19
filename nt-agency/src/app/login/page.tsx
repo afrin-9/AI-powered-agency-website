@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { Logo } from "@/components/public/Logo";
 import { LOGIN_POINTS } from "@/data/auth";
 import { DEMO_ACCOUNTS } from "@/data/demoAccounts";
@@ -11,7 +11,9 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Team login" };
 
 export default async function LoginPage() {
-  if (await getSession()) redirect("/admin");
+  // Check the account still exists, not just the cookie: a stale cookie would bounce
+  // between here and /admin forever.
+  if (await getCurrentUser()) redirect("/admin");
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">

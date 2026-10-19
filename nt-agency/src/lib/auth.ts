@@ -49,6 +49,16 @@ export async function getSession() {
 }
 
 /**
+ * The signed-in user, read fresh from the database. Null when there is no session or the
+ * cookie points at an account that no longer exists (deleted, or the database was re-seeded).
+ */
+export async function getCurrentUser() {
+  const session = await getSession();
+  if (!session) return null;
+  return prisma.user.findUnique({ where: { id: session.sub }, select: { id: true, name: true, role: true } });
+}
+
+/**
  * Ensures the request has a valid session (and optionally one of the given roles).
  * Re-reads the user's role from the database so role changes and deletions apply immediately.
  */
