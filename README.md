@@ -308,4 +308,5 @@ Vercel (app) and Neon (PostgreSQL), both on free tiers:
 - **Sessions can't be revoked individually** before they expire (deleting a user or changing a role does apply at once). Next step: a session table or token version.
 - **Clearing optional fields:** an emptied optional text field (e.g. a client's phone) is ignored instead of cleared.
 - **The AI is untested on real data.** The lead score is a heuristic and the eval set is small. Next step: collect real won/lost outcomes and calibrate the score.
+- latest deployement
 - **Other ideas:** file uploads for briefs, a client portal for project progress, and end-to-end browser tests (Playwright).
