@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 export function Modal({
@@ -23,7 +24,9 @@ export function Modal({
   }, [open, onClose]);
 
   if (!open) return null;
-  return (
+  // Rendered into <body>: the page-transition wrapper keeps a transform animation applied,
+  // which would otherwise make it the containing block for this `position: fixed` overlay.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex animate-fade-in items-end justify-center bg-black/60 p-4 backdrop-blur-sm sm:items-center"
       onClick={onClose}
@@ -47,6 +50,7 @@ export function Modal({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
