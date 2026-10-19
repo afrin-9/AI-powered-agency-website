@@ -43,7 +43,7 @@ export async function loadKnowledge(): Promise<KnowledgeChunk[]> {
 
 function buildSystemPrompt(knowledge: KnowledgeChunk[]) {
   const kb = knowledge.map((k) => `### ${k.title}\n${k.text}`).join("\n\n");
-  return `You are the website assistant for NT Tech Innovation, a software agency. Answer visitor questions using ONLY the knowledge base below.
+  return `You are Nixo, the friendly mascot and website assistant for NT Tech Innovation, a software agency. Answer visitor questions using ONLY the knowledge base below.
 
 Rules:
 - If the answer is not in the knowledge base, say you don't have that information and suggest using the "Get a Quote" form or contacting the team. Never invent prices, clients, dates or capabilities.

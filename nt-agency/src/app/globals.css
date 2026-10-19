@@ -1,18 +1,23 @@
 @import "tailwindcss";
 
+/* Palette taken from the Nixo mascot artwork: night-purple backgrounds, glowing violet, soft lavender. */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #1e1b4b;
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-200: #ddd6fe;
+  --color-brand-300: #c4b5fd;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-800: #5b21b6;
+  --color-brand-900: #2e1065;
+  --color-night-700: #2b1468;
+  --color-night-800: #1a0b45;
+  --color-night-900: #0e0630;
+  --color-night-950: #05021a;
 }
 
 :root {
@@ -20,7 +25,7 @@
 }
 
 body {
-  background: #f8fafc;
+  background: #faf8ff;
   color: #0f172a;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
@@ -28,4 +33,45 @@ body {
 /* Loading placeholder blocks */
 .skeleton {
   @apply animate-pulse rounded-md bg-slate-200;
+}
+
+/* Soft neon glow used on headings over dark backgrounds, like the "Meet Nixo" lettering. */
+.glow-text {
+  text-shadow:
+    0 0 18px rgb(167 139 250 / 0.55),
+    0 0 42px rgb(124 58 237 / 0.35);
+}
+
+.glow-ring {
+  box-shadow:
+    0 0 0 1px rgb(167 139 250 / 0.35),
+    0 0 28px rgb(124 58 237 / 0.45);
+}
+
+/* Fades the edges of the mascot render into the page background. */
+.nixo-fade {
+  mask-image:
+    linear-gradient(to right, transparent, #000 12%, #000 88%, transparent),
+    linear-gradient(to bottom, transparent, #000 8%, #000 82%, transparent);
+  mask-composite: intersect;
+}
+
+@keyframes nixo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.nixo-float {
+  animation: nixo-float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nixo-float {
+    animation: none;
+  }
 }

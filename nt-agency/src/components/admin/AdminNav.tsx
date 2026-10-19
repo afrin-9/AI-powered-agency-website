@@ -94,7 +94,9 @@ export function AdminNav({ user }: { user: { name: string; role: Role } }) {
       <aside className="hidden w-60 shrink-0 flex-col justify-between border-r border-slate-200 bg-white p-4 lg:flex">
         <div>
           <Link href="/admin" className="mb-6 flex items-center gap-2 px-2 font-semibold">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 text-xs font-bold text-white">NT</span>
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-linear-to-br from-brand-400 to-brand-700 text-xs font-bold text-white">
+              NT
+            </span>
             Admin
           </Link>
           {links}

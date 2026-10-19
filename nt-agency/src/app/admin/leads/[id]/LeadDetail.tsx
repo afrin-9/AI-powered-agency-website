@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Bot, Copy, RefreshCw, Trash2 } from "lucide-react";
+import { ArrowLeft, Copy, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { ActivityType, AiSource, Category, LeadStatus, Role, Timeline, Urgency } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { LEAD_STATUS_LABEL, nextStatuses } from "@/lib/leadWorkflow";
 import { CATEGORY_LABEL, STATUS_COLOR, TIMELINE_LABEL, URGENCY_COLOR, scoreColor } from "@/lib/labels";
 import { Badge, Button, Card, ErrorState, Modal, Select, Spinner, Textarea, money } from "@/components/ui";
+import { NixoAvatar } from "@/components/public/Nixo";
 
 interface Activity {
   id: string;
@@ -185,7 +186,7 @@ export function LeadDetail({ id }: { id: string }) {
           <Card className="border-brand-200 p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="flex items-center gap-2 font-semibold">
-                <Bot className="h-5 w-5 text-brand-600" /> AI triage
+                <NixoAvatar size={28} /> AI triage
               </h2>
               <div className="flex items-center gap-2">
                 {lead.aiSource && (
