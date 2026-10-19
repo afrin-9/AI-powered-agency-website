@@ -9,7 +9,7 @@ import type { Category, LeadStatus, Urgency } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { LEAD_STATUS_LABEL, nextStatuses } from "@/lib/leadWorkflow";
 import { CATEGORY_LABEL, STATUS_COLOR, URGENCY_COLOR, scoreColor } from "@/lib/labels";
-import { Badge, Button, Card, EmptyState, ErrorState, Input, Select, Spinner, cn, money } from "@/components/ui";
+import { Badge, Button, Card, EmptyState, ErrorState, Input, PageHeader, Select, Spinner, cn, money } from "@/components/ui";
 
 interface LeadRow {
   id: string;
@@ -35,6 +35,14 @@ interface LeadPage {
 }
 
 const STATUSES: LeadStatus[] = ["NEW", "CONTACTED", "PROPOSAL_SENT", "WON", "LOST"];
+
+const STAGE_DOT: Record<LeadStatus, string> = {
+  NEW: "bg-blue-400",
+  CONTACTED: "bg-amber-400",
+  PROPOSAL_SENT: "bg-violet-400",
+  WON: "bg-emerald-400",
+  LOST: "bg-red-400",
+};
 
 export function LeadsView() {
   const router = useRouter();
@@ -95,29 +103,31 @@ export function LeadsView() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Leads</h1>
-          <p className="text-sm text-slate-400">AI-triaged inquiries from the website</p>
-        </div>
-        <div className="flex rounded-lg border border-white/15 bg-night-900 p-0.5">
-          <button
-            onClick={() => setView("table")}
-            aria-pressed={view === "table"}
-            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "table" && "bg-night-800 font-medium")}
-          >
-            <List className="h-4 w-4" /> Table
-          </button>
-          <button
-            onClick={() => setView("board")}
-            aria-pressed={view === "board"}
-            className={cn("flex items-center gap-1 rounded-md px-3 py-1.5 text-sm", view === "board" && "bg-night-800 font-medium")}
-          >
-            <LayoutGrid className="h-4 w-4" /> Board
-          </button>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Leads"
+        description="Inquiries from the website, triaged and scored by Nixo."
+        actions={
+          <div className="flex rounded-lg border border-white/10 bg-white/3 p-1">
+            {(["table", "board"] as const).map((v) => {
+              const Icon = v === "table" ? List : LayoutGrid;
+              return (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  aria-pressed={view === v}
+                  className={cn(
+                    "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm capitalize transition-all duration-200",
+                    view === v ? "bg-white/10 text-white shadow" : "text-slate-400 hover:text-white",
+                  )}
+                >
+                  <Icon className="h-4 w-4" /> {v}
+                </button>
+              );
+            })}
+          </div>
+        }
+      />
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <form
@@ -127,7 +137,7 @@ export function LeadsView() {
             setParam("q", q.trim());
           }}
         >
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+          <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-500" />
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -173,30 +183,30 @@ export function LeadsView() {
           description="Try a different filter, or submit a test inquiry from the Get a Quote page."
         />
       ) : view === "table" ? (
-        <Card className={cn("overflow-hidden", loading && "opacity-60")}>
+        <Card className={cn("animate-fade-in overflow-hidden transition-opacity duration-300", loading && "opacity-60")}>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-night-800/50 text-xs uppercase text-slate-400">
+              <thead className="border-b border-white/5 text-[11px] uppercase tracking-wider text-slate-500">
                 <tr>
-                  <th className="px-4 py-3">Lead</th>
-                  <th className="px-4 py-3">AI score</th>
-                  <th className="px-4 py-3">AI category / urgency</th>
-                  <th className="px-4 py-3">Estimate</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Owner</th>
+                  <th className="px-5 py-3 font-medium">Lead</th>
+                  <th className="px-5 py-3 font-medium">AI score</th>
+                  <th className="px-5 py-3 font-medium">AI category / urgency</th>
+                  <th className="px-5 py-3 font-medium">Estimate</th>
+                  <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 font-medium">Owner</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {data.items.map((l) => (
                   <tr
                     key={l.id}
-                    className="cursor-pointer hover:bg-night-800/60"
+                    className="group cursor-pointer transition-colors duration-150 hover:bg-white/3"
                     onClick={() => router.push(`/admin/leads/${l.id}`)}
                   >
-                    <td className="max-w-xs px-4 py-3">
+                    <td className="max-w-xs px-5 py-4">
                       <Link
                         href={`/admin/leads/${l.id}`}
-                        className="font-medium text-white hover:text-brand-200"
+                        className="font-medium text-white transition-colors group-hover:text-brand-200"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {l.name}
@@ -204,20 +214,20 @@ export function LeadsView() {
                       <p className="truncate text-xs text-slate-400">{l.company ?? l.email}</p>
                       {l.aiSummary && <p className="mt-1 line-clamp-1 text-xs text-slate-300">{l.aiSummary}</p>}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <Badge color={scoreColor(l.aiScore)}>{l.aiScore ?? "—"}</Badge>
                     </td>
-                    <td className="space-x-1 px-4 py-3">
+                    <td className="space-x-1 px-5 py-4">
                       {l.aiCategory && <Badge color="indigo">{CATEGORY_LABEL[l.aiCategory]}</Badge>}
                       {l.aiUrgency && <Badge color={URGENCY_COLOR[l.aiUrgency]}>{l.aiUrgency.toLowerCase()}</Badge>}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-slate-200">
+                    <td className="whitespace-nowrap px-5 py-4 text-slate-200">
                       {l.estimatedMax ? `${money(l.estimatedMin)}–${money(l.estimatedMax)}` : "—"}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <Badge color={STATUS_COLOR[l.status]}>{LEAD_STATUS_LABEL[l.status]}</Badge>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-5 py-4 text-slate-300">
                       {l.assignedTo?.name ?? <span className="text-slate-500">Unassigned</span>}
                     </td>
                   </tr>
@@ -225,7 +235,7 @@ export function LeadsView() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-between border-t border-white/5 px-4 py-3 text-sm text-slate-300">
+          <div className="flex items-center justify-between border-t border-white/5 px-5 py-3 text-sm text-slate-400">
             <span>
               {data.total} lead{data.total === 1 ? "" : "s"}
             </span>
@@ -245,18 +255,21 @@ export function LeadsView() {
           </div>
         </Card>
       ) : (
-        <div className={cn("grid gap-4 overflow-x-auto pb-2 md:grid-cols-3 xl:grid-cols-5", loading && "opacity-60")}>
+        <div className={cn("grid animate-fade-in gap-3 overflow-x-auto pb-2 transition-opacity md:grid-cols-3 xl:grid-cols-5", loading && "opacity-60")}>
           {STATUSES.map((s) => {
             const items = data.items.filter((l) => l.status === s);
             return (
-              <div key={s} className="min-w-60 rounded-xl bg-night-800 p-3">
-                <div className="mb-3 flex items-center justify-between">
-                  <Badge color={STATUS_COLOR[s]}>{LEAD_STATUS_LABEL[s]}</Badge>
-                  <span className="text-xs text-slate-400">{items.length}</span>
+              <div key={s} className="min-w-60 rounded-2xl border border-white/5 bg-white/2 p-2.5">
+                <div className="mb-2.5 flex items-center justify-between px-1.5 pt-1">
+                  <span className="flex items-center gap-2 text-sm font-medium text-slate-200">
+                    <span className={cn("h-2 w-2 rounded-full", STAGE_DOT[s])} />
+                    {LEAD_STATUS_LABEL[s]}
+                  </span>
+                  <span className="rounded-md bg-white/5 px-1.5 text-xs tabular-nums text-slate-400">{items.length}</span>
                 </div>
                 <div className="space-y-2">
                   {items.map((l) => (
-                    <div key={l.id} className="rounded-lg border border-white/10 bg-night-900 p-3 shadow-sm">
+                    <div key={l.id} className="rounded-xl border border-white/7 bg-night-900 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/15 hover:shadow-lg hover:shadow-black/30">
                       <div className="flex items-start justify-between gap-2">
                         <Link href={`/admin/leads/${l.id}`} className="text-sm font-medium hover:text-brand-200">
                           {l.name}
@@ -276,7 +289,7 @@ export function LeadsView() {
                               key={to}
                               onClick={() => move(l, to)}
                               className={cn(
-                                "rounded border px-2 py-0.5 text-xs",
+                                "rounded-md border px-2 py-0.5 text-xs transition-colors",
                                 to === "LOST"
                                   ? "border-red-500/30 text-red-400 hover:bg-red-500/10"
                                   : "border-brand-400/25 text-brand-300 hover:bg-brand-500/10",
@@ -289,7 +302,9 @@ export function LeadsView() {
                       )}
                     </div>
                   ))}
-                  {items.length === 0 && <p className="py-4 text-center text-xs text-slate-500">Empty</p>}
+                  {items.length === 0 && (
+                    <p className="rounded-xl border border-dashed border-white/5 py-6 text-center text-xs text-slate-600">No leads</p>
+                  )}
                 </div>
               </div>
             );

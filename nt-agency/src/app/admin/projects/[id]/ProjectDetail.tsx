@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import type { ProjectStatus } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { PROJECT_STATUS_COLOR, PROJECT_STATUS_LABEL } from "@/lib/labels";
-import { Badge, Button, Card, ErrorState, Input, Spinner, money } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, Input, Spinner, cn, money } from "@/components/ui";
 
 interface Milestone {
   id: string;
@@ -117,13 +117,17 @@ export function ProjectDetail({ id }: { id: string }) {
 
   return (
     <div className="space-y-6">
-      <Link href="/admin/projects" className="inline-flex items-center gap-1 text-sm text-slate-300 hover:text-white">
-        <ArrowLeft className="h-4 w-4" /> Back to projects
-      </Link>
+      <nav className="flex items-center gap-1.5 text-sm text-slate-500">
+        <Link href="/admin/projects" className="inline-flex items-center gap-1 transition-colors hover:text-white">
+          <ArrowLeft className="h-3.5 w-3.5" /> Projects
+        </Link>
+        <span>/</span>
+        <span className="truncate text-slate-300">{project.title}</span>
+      </nav>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">{project.title}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">{project.title}</h1>
           <p className="text-sm text-slate-400">
             {project.service?.name ?? "No service"} · Budget {money(project.budget)}
           </p>
@@ -137,32 +141,42 @@ export function ProjectDetail({ id }: { id: string }) {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="p-5 lg:col-span-2">
+        <Card className="p-6 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold">Milestones</h2>
+            <h2 className="font-medium text-white">Milestones</h2>
             <span className="text-sm text-slate-400">{pct}% complete</span>
           </div>
-          <div className="mt-3 h-2 rounded-full bg-night-800">
-            <div className="h-2 rounded-full bg-emerald-500 transition-all" style={{ width: `${pct}%` }} />
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/6">
+            <div
+              className="h-full rounded-full bg-linear-to-r from-emerald-500 to-emerald-400 transition-[width] duration-700 ease-out"
+              style={{ width: `${pct}%` }}
+            />
           </div>
 
           <ul className="mt-4 divide-y divide-white/5">
             {project.milestones.map((m) => (
-              <li key={m.id} className="flex items-center justify-between gap-3 py-3">
+              <li key={m.id} className="group flex items-center justify-between gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-white/3">
                 <label className="flex cursor-pointer items-center gap-3">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 accent-emerald-600"
+                    className="h-4 w-4 cursor-pointer accent-emerald-500"
                     checked={m.done}
                     onChange={() => toggle(m)}
                   />
-                  <span className={m.done ? "text-slate-500 line-through" : ""}>{m.title}</span>
+                  <span
+                    className={cn(
+                      "transition-colors duration-300",
+                      m.done ? "text-slate-500 line-through" : "text-slate-200",
+                    )}
+                  >
+                    {m.title}
+                  </span>
                 </label>
                 <div className="flex items-center gap-3 text-xs text-slate-400">
                   {m.dueDate && <span>Due {new Date(m.dueDate).toLocaleDateString()}</span>}
                   <button
                     onClick={() => removeMilestone(m.id)}
-                    className="rounded p-1 text-red-400 hover:bg-red-500/10"
+                    className="rounded-md p-1 text-red-400 opacity-0 transition-all hover:bg-red-500/10 group-hover:opacity-100 focus:opacity-100"
                     aria-label="Delete milestone"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -195,8 +209,8 @@ export function ProjectDetail({ id }: { id: string }) {
         </Card>
 
         <div className="space-y-6">
-          <Card className="p-5">
-            <h2 className="font-semibold">Client</h2>
+          <Card className="p-6">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-slate-500">Client</h2>
             {project.client ? (
               <div className="mt-2 text-sm">
                 <p className="font-medium">{project.client.company ?? project.client.name}</p>
@@ -217,8 +231,8 @@ export function ProjectDetail({ id }: { id: string }) {
             )}
           </Card>
 
-          <Card className="p-5">
-            <h2 className="font-semibold">Summary</h2>
+          <Card className="p-6">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-slate-500">Summary</h2>
             <p className="mt-2 text-sm text-slate-300">{project.summary}</p>
             {project.techStack.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1">

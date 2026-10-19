@@ -4,7 +4,20 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { api, FetchError } from "@/lib/fetcher";
-import { Button, Card, EmptyState, ErrorState, Field, Input, Modal, Select, Spinner, Textarea } from "@/components/ui";
+import {
+  Button,
+  Card,
+  EmptyState,
+  ErrorState,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  Select,
+  Spinner,
+  Textarea,
+  cn,
+} from "@/components/ui";
 
 export type FieldDef = {
   name: string;
@@ -163,18 +176,18 @@ export function ResourceManager<T extends Item>({
   const showActions = canEdit || canDelete;
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">{title}</h1>
-          {description && <p className="text-sm text-slate-400">{description}</p>}
-        </div>
-        {canCreate && (
-          <Button onClick={() => openForm()}>
-            <Plus className="h-4 w-4" /> {newLabel}
-          </Button>
-        )}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title={title}
+        description={description}
+        actions={
+          canCreate && (
+            <Button onClick={() => openForm()}>
+              <Plus className="h-4 w-4" /> {newLabel}
+            </Button>
+          )
+        }
+      />
 
       {error ? (
         <ErrorState message={error} onRetry={load} />
@@ -186,36 +199,36 @@ export function ResourceManager<T extends Item>({
           action={canCreate ? <Button onClick={() => openForm()}>{newLabel}</Button> : undefined}
         />
       ) : (
-        <Card className="overflow-hidden">
+        <Card className="animate-fade-in overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-night-800/50 text-xs uppercase text-slate-400">
+              <thead className="border-b border-white/5 text-[11px] uppercase tracking-wider text-slate-500">
                 <tr>
                   {columns.map((c) => (
-                    <th key={c.header} className="px-4 py-3">
+                    <th key={c.header} className="px-5 py-3 font-medium">
                       {c.header}
                     </th>
                   ))}
-                  {showActions && <th className="px-4 py-3 text-right">Actions</th>}
+                  {showActions && <th className="px-5 py-3 text-right font-medium">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {items.map((item) => (
                   <tr
                     key={item.id}
-                    className={onRowClick ? "cursor-pointer hover:bg-night-800/60" : undefined}
+                    className={cn("group transition-colors duration-150 hover:bg-white/3", onRowClick && "cursor-pointer")}
                     onClick={onRowClick ? () => onRowClick(item) : undefined}
                   >
                     {columns.map((c) => (
-                      <td key={c.header} className={c.className ?? "px-4 py-3"}>
+                      <td key={c.header} className={c.className ?? "px-5 py-4"}>
                         {c.cell(item)}
                       </td>
                     ))}
                     {showActions && (
-                      <td className="whitespace-nowrap px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                      <td className="whitespace-nowrap px-5 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                         {canEdit && (
                           <button
-                            className="rounded p-1.5 text-slate-400 hover:bg-night-800"
+                            className="rounded-md p-1.5 text-slate-500 opacity-60 transition-all hover:bg-white/6 hover:text-white group-hover:opacity-100"
                             onClick={() => openForm(item)}
                             aria-label="Edit"
                           >
@@ -224,7 +237,7 @@ export function ResourceManager<T extends Item>({
                         )}
                         {canDelete && (
                           <button
-                            className="rounded p-1.5 text-red-400 hover:bg-red-500/10"
+                            className="rounded-md p-1.5 text-red-400 opacity-60 transition-all hover:bg-red-500/10 group-hover:opacity-100"
                             onClick={() => remove(item)}
                             aria-label="Delete"
                           >
@@ -280,7 +293,7 @@ export function ResourceManager<T extends Item>({
                   <input
                     id={f.name}
                     type="checkbox"
-                    className="h-4 w-4 accent-brand-600"
+                    className="h-4 w-4 cursor-pointer accent-brand-500"
                     checked={Boolean(value)}
                     onChange={(e) => setValue(f.name, e.target.checked)}
                   />
