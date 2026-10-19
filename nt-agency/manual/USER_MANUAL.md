@@ -185,6 +185,8 @@ The dashboard (also called the **CRM**) is where the agency team handles custome
 
 To log out, click the **door icon** next to your name at the bottom of the left sidebar. You are also logged out automatically after 8 hours.
 
+If you open the login page while you are still logged in, it says **You're signed in as …** instead of showing the form. Click **Continue to dashboard** to carry on, or **Sign out to use another account** to log in as someone else.
+
 ### 3.2 Dashboard
 
 The first page after logging in gives a summary of the sales pipeline.

@@ -1,19 +1,20 @@
 import { Suspense } from "react";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { Logo } from "@/components/public/Logo";
 import { LOGIN_POINTS } from "@/data/auth";
 import { DEMO_ACCOUNTS } from "@/data/demoAccounts";
 import { LoginForm } from "./LoginForm";
+import { SignedInNotice } from "./SignedInNotice";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Team login" };
 
 export default async function LoginPage() {
-  // Check the account still exists, not just the cookie: a stale cookie would bounce
-  // between here and /admin forever.
-  if (await getCurrentUser()) redirect("/admin");
+  // The login screen always shows. A signed-in user gets a "continue / sign out" choice
+  // instead of a redirect; the account is read from the database, so a stale cookie just
+  // shows the sign-in form.
+  const user = await getCurrentUser();
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
@@ -65,9 +66,13 @@ export default async function LoginPage() {
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-white">Welcome back</h1>
           <p className="mt-1.5 text-sm text-slate-400">Sign in to manage leads, projects and content.</p>
-          <Suspense>
-            <LoginForm />
-          </Suspense>
+          {user ? (
+            <SignedInNotice name={user.name} />
+          ) : (
+            <Suspense>
+              <LoginForm />
+            </Suspense>
+          )}
           <div className="mt-8 rounded-xl border border-dashed border-white/10 bg-white/2 p-4 text-xs text-slate-400">
             <p className="mb-1.5 font-mono uppercase tracking-[0.18em] text-slate-500">Demo accounts</p>
             {DEMO_ACCOUNTS.map((a) => (
