@@ -40,6 +40,25 @@ enum LeadStatus {
   LOST
 }
 
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AiSource {
+  LLM
+  FALLBACK
+}
+
+enum ActivityType {
+  CREATED
+  STATUS_CHANGE
+  NOTE
+  ASSIGN
+  AI_TRIAGE
+}
+
 enum ProjectStatus {
   PLANNED
   IN_PROGRESS
@@ -97,26 +116,41 @@ model Lead {
   service      Service?       @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   assignedToId String?
   assignedTo   User?          @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  estimatedMin Int?
+  estimatedMax Int?
+  aiCategory   Category?
+  aiUrgency    Urgency?
+  aiScore      Int?
+  aiSummary    String?
+  aiDraftReply String?
+  aiSource     AiSource?
+  aiTriagedAt  DateTime?
+  clientId     String?
+  client       Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  projectId    String?        @unique
+  project      Project?       @relation(fields: [projectId], references: [id], onDelete: SetNull)
   activities   LeadActivity[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
   @@index([status])
   @@index([score])
+  @@index([aiScore])
   @@index([createdAt])
 }
 
 /// Audit trail for a lead: status changes and notes.
 model LeadActivity {
-  id         String      @id @default(cuid())
+  id         String       @id @default(cuid())
   leadId     String
-  lead       Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead       Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type       ActivityType
   userId     String?
-  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user       User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   fromStatus LeadStatus?
   toStatus   LeadStatus?
   note       String?
-  createdAt  DateTime    @default(now())
+  createdAt  DateTime     @default(now())
 
   @@index([leadId])
 }
@@ -130,6 +164,7 @@ model Client {
   email     String
   phone     String?
   projects  Project[]
+  leads     Lead[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -148,6 +183,7 @@ model Project {
   clientId   String?
   client     Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
   milestones Milestone[]
+  lead       Lead?
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 }
