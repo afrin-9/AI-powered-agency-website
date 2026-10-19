@@ -43,7 +43,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-5 space-y-4" noValidate>
+    <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
       <Field label="Email" htmlFor="email">
         <Input
           id="email"
@@ -67,7 +67,7 @@ export function LoginForm() {
           {error}
         </p>
       )}
-      <Button type="submit" loading={loading} className="w-full">
+      <Button type="submit" loading={loading} className="h-11 w-full">
         Sign in
       </Button>
     </form>

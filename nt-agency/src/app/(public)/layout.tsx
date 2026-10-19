@@ -1,48 +1,68 @@
 import Link from "next/link";
-import { Navbar } from "@/components/public/Navbar";
+import { Logo, Navbar } from "@/components/public/Navbar";
 import { ChatWidget } from "@/components/public/ChatWidget";
 import { AskNixoButton } from "@/components/public/Nixo";
 
+const FOOTER_LINKS = [
+  {
+    title: "Services",
+    links: [
+      { href: "/services", label: "All services" },
+      { href: "/quote", label: "Instant estimate" },
+      { href: "/portfolio", label: "Our work" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { href: "/about", label: "About us" },
+      { href: "/about#faq", label: "FAQ" },
+      { href: "/login", label: "Team login" },
+    ],
+  },
+];
+
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="bg-black px-4 py-1.5 text-center text-xs text-brand-200/80">
+    <div className="relative flex min-h-screen flex-col overflow-x-clip">
+      <div className="border-b border-white/5 px-4 py-1.5 text-center text-[11px] tracking-wide text-slate-500">
         Concept project for NT Tech Innovation — demo content, not an official website.
       </div>
       <Navbar />
       <main className="flex-1">{children}</main>
-      <footer className="bg-linear-to-b from-transparent to-black/60 pt-8 text-slate-400">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm sm:grid-cols-3">
-          <div>
-            <p className="font-semibold text-white">NT Tech Innovation</p>
-            <p className="mt-2">Web, mobile and AI solutions for growing businesses.</p>
-            <AskNixoButton className="mt-4 text-brand-300 hover:text-brand-200">Questions? Ask Nixo →</AskNixoButton>
+
+      <footer className="px-3 pb-3 pt-16 sm:px-4">
+        <div className="surface mx-auto max-w-6xl rounded-3xl p-8 sm:p-10">
+          <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+              <Logo />
+              <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-400">
+                Web, mobile and AI products for startups and SMEs in Bangladesh and beyond.
+              </p>
+              <AskNixoButton className="mt-5 inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm text-brand-200 transition-colors hover:border-brand-400/40 hover:bg-brand-500/10">
+                Questions? Ask Nixo
+              </AskNixoButton>
+            </div>
+            {FOOTER_LINKS.map((col) => (
+              <div key={col.title}>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500">{col.title}</p>
+                <ul className="mt-4 space-y-2.5">
+                  {col.links.map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-sm text-slate-300 transition-colors hover:text-white">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="space-y-1">
-            <p className="font-semibold text-white">Explore</p>
-            <Link href="/services" className="block hover:text-white">
-              Services
-            </Link>
-            <Link href="/portfolio" className="block hover:text-white">
-              Portfolio
-            </Link>
-            <Link href="/about" className="block hover:text-white">
-              About &amp; FAQ
-            </Link>
-          </div>
-          <div className="space-y-1">
-            <p className="font-semibold text-white">Work with us</p>
-            <Link href="/quote" className="block hover:text-white">
-              Get an instant quote
-            </Link>
-            <Link href="/login" className="block hover:text-white">
-              Team login
-            </Link>
+          <div className="mt-10 flex flex-col justify-between gap-2 border-t border-white/5 pt-6 text-xs text-slate-500 sm:flex-row">
+            <p>© {new Date().getFullYear()} NT Tech Innovation · Concept demo</p>
+            <p>Built with Next.js, PostgreSQL and Claude</p>
           </div>
         </div>
-        <p className="border-t border-white/5 py-4 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} Concept demo
-        </p>
       </footer>
       <ChatWidget />
     </div>

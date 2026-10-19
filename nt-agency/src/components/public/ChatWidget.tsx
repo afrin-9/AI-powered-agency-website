@@ -70,7 +70,7 @@ export function ChatWidget() {
       </button>
 
       {open && (
-        <div className="fixed bottom-24 right-4 z-50 flex h-[min(560px,75vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-brand-300/40 bg-night-900 shadow-2xl shadow-brand-900/30">
+        <div className="fixed bottom-24 right-4 z-50 flex h-[min(560px,75vh)] w-[min(380px,calc(100vw-2rem))] origin-bottom-right animate-pop-in flex-col overflow-hidden rounded-2xl border border-brand-300/40 bg-night-900 shadow-2xl shadow-brand-900/30">
           <div className="flex items-center gap-3 bg-linear-to-r from-night-950 via-night-800 to-brand-800 px-4 py-3 text-white">
             <NixoAvatar size={40} className="ring-2 ring-brand-400/60" />
             <div>
@@ -81,7 +81,7 @@ export function ChatWidget() {
 
           <div className="flex-1 space-y-3 overflow-y-auto bg-night-950/40 p-4" aria-live="polite">
             {messages.map((m, i) => (
-              <div key={i} className={cn("flex items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}>
+              <div key={i} className={cn("flex animate-slide-up items-end gap-2", m.role === "user" ? "justify-end" : "justify-start")}>
                 {m.role === "assistant" && <NixoAvatar size={26} />}
                 <div
                   className={cn(

@@ -1,23 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  CalendarCheck,
+  Globe2,
+  LifeBuoy,
+  Layers,
+  ReceiptText,
+  Sparkles,
+} from "lucide-react";
 import { prisma } from "@/lib/db";
-import { money } from "@/components/ui";
+import { Reveal, money } from "@/components/ui";
 import { CATEGORY_ICON } from "@/components/public/categoryIcon";
 import { AskNixoButton, NixoAvatar } from "@/components/public/Nixo";
+import { Eyebrow, SectionHeading } from "@/components/public/Section";
 
 export const dynamic = "force-dynamic";
 
 const PROCESS = [
   { title: "Discovery", text: "We map your goals, users and scope in a free consultation." },
   { title: "Design", text: "Wireframes and clickable prototypes before any code is written." },
-  { title: "Build", text: "Short sprints with weekly demos so you always see progress." },
+  { title: "Build", text: "Short sprints with weekly demos, so you always see progress." },
   { title: "Launch", text: "Deployment, handover training and 30 days of free support." },
+];
+
+const WHY = [
+  {
+    icon: ReceiptText,
+    title: "Transparent pricing",
+    text: "A base price plus a fixed cost per feature. See your range instantly, before any call.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Weekly demos",
+    text: "You see working software every week, not a big reveal at the end.",
+  },
+  {
+    icon: LifeBuoy,
+    title: "30 days of support",
+    text: "Every launch includes a month of free bug fixes, with maintenance plans after.",
+  },
+  {
+    icon: Globe2,
+    title: "Local and international",
+    text: "We work in English or Bangla and accept bank transfer, bKash and international payments.",
+  },
+  {
+    icon: Sparkles,
+    title: "AI where it helps",
+    text: "Chatbots, forecasting and LLM integrations that solve a real problem, not a buzzword.",
+  },
+  {
+    icon: Layers,
+    title: "Modern, proven stack",
+    text: "Next.js, Node, Flutter, Python and PostgreSQL, deployed on AWS or Vercel.",
+  },
 ];
 
 export default async function HomePage() {
   const [services, projects] = await Promise.all([
-    prisma.service.findMany({ where: { active: true }, orderBy: { basePrice: "asc" }, take: 6 }),
+    prisma.service.findMany({ where: { active: true }, orderBy: { basePrice: "asc" } }),
     prisma.project.findMany({
       where: { published: true },
       include: { service: true },
@@ -25,46 +68,56 @@ export default async function HomePage() {
       take: 3,
     }),
   ]);
+  const minPrice = services[0]?.basePrice;
+
+  const facts = [
+    { value: String(services.length), label: "Core services" },
+    { value: minPrice ? money(minPrice) : "—", label: "Projects from" },
+    { value: "1 day", label: "Reply time" },
+    { value: "30 days", label: "Free support" },
+  ];
 
   return (
     <>
-      <section className="relative overflow-hidden bg-night-950 text-white">
+      {/* ---------- Hero ---------- */}
+      <section className="relative">
+        <div aria-hidden className="bg-grid pointer-events-none absolute inset-0 -top-24" />
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_75%_65%,rgb(124_58_237/0.45),transparent_55%),radial-gradient(ellipse_at_10%_0%,rgb(76_29_149/0.35),transparent_45%)]"
+          className="pointer-events-none absolute inset-0 -top-24 bg-[radial-gradient(ellipse_50%_45%_at_72%_45%,rgb(124_58_237/0.35),transparent_70%),radial-gradient(ellipse_40%_35%_at_15%_10%,rgb(76_29_149/0.3),transparent_70%)]"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-linear-to-b from-transparent to-night-950"
-        />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-6 px-4 pb-8 pt-14 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:pb-14">
-          <div>
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-400/30 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-200">
-              <Sparkles className="h-3.5 w-3.5" /> Now building AI-powered products
-            </p>
-            <h1 className="glow-text max-w-2xl bg-linear-to-b from-white to-brand-300 bg-clip-text text-4xl font-bold leading-tight text-transparent sm:text-5xl">
-              Software that grows your business — websites, apps and practical AI.
+        <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-12 pt-12 sm:pt-16 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="animate-slide-up">
+            <AskNixoButton className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/4 py-1 pl-1 pr-3 text-xs text-slate-300 transition-colors hover:border-brand-400/40 hover:bg-brand-500/10">
+              <NixoAvatar size={22} />
+              Meet Nixo, our AI assistant
+              <ArrowRight className="h-3 w-3 text-brand-300 transition-transform group-hover:translate-x-0.5" />
+            </AskNixoButton>
+            <h1 className="text-gradient mt-6 max-w-2xl text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+              Software that grows your business.
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-brand-100/80">
-              NT Tech Innovation designs and builds digital products for startups and SMEs in Bangladesh and beyond.
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-400">
+              NT Tech Innovation designs and builds websites, mobile apps and practical AI for startups and SMEs in
+              Bangladesh and beyond.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/quote"
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-5 py-3 font-medium shadow-lg shadow-brand-600/40 hover:bg-brand-500"
+                className="group inline-flex h-11 items-center gap-2 rounded-xl bg-brand-600 px-5 font-medium text-white shadow-[0_0_0_1px_rgb(167_139_250/0.4)_inset,0_10px_30px_-8px_rgb(124_58_237/0.8)] transition-all hover:bg-brand-500 active:scale-[0.97]"
               >
-                Get an instant estimate <ArrowRight className="h-4 w-4" />
+                Get an instant estimate
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/portfolio"
-                className="rounded-lg border border-brand-300/30 px-5 py-3 font-medium text-brand-100 hover:bg-white/5"
+                className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/4 px-5 font-medium text-slate-200 transition-all hover:border-white/20 hover:bg-white/8 active:scale-[0.97]"
               >
                 See our work
               </Link>
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-sm">
+          <div className="relative mx-auto w-full max-w-88 animate-[slide-up_0.8s_var(--ease-out-soft)_0.15s_both]">
             <Image
               src="/nixo/nixo-body.webp"
               alt="Nixo, the NT Tech Innovation mascot, waving hello"
@@ -73,107 +126,170 @@ export default async function HomePage() {
               priority
               className="nixo-fade nixo-float h-auto w-full"
             />
-            <AskNixoButton className="glow-ring absolute left-0 top-6 flex items-center gap-2 rounded-2xl rounded-bl-sm bg-night-900/90 px-4 py-2 text-left text-sm text-brand-100 backdrop-blur hover:bg-night-800 sm:-left-10">
-              <MessageCircle className="h-4 w-4 text-brand-300" />
-              <span>
-                Hi, I&apos;m <b className="text-white">Nixo</b>! Ask me anything.
-              </span>
-            </AskNixoButton>
           </div>
+        </div>
+
+        {/* Key facts */}
+        <div className="relative mx-auto max-w-6xl px-4 pb-6">
+          <dl className="grid grid-cols-2 divide-white/5 rounded-2xl border border-white/8 bg-white/2 backdrop-blur-sm sm:grid-cols-4 sm:divide-x">
+            {facts.map((f, i) => (
+              <Reveal key={f.label} delay={i * 80} className="px-6 py-5">
+                <dt className="text-xs text-slate-500">{f.label}</dt>
+                <dd className="mt-1 text-2xl font-semibold tracking-tight text-white">{f.value}</dd>
+              </Reveal>
+            ))}
+          </dl>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold">What we do</h2>
-            <p className="mt-1 text-slate-300">End-to-end services from idea to launch.</p>
-          </div>
-          <Link href="/services" className="text-sm font-medium text-brand-300 hover:underline">
-            All services →
-          </Link>
-        </div>
+      {/* ---------- Services ---------- */}
+      <section className="mx-auto max-w-6xl px-4 py-24">
+        <SectionHeading
+          eyebrow="01 — Services"
+          title="Everything you need, from idea to launch."
+          description="Clear starting prices for every service. Pick one to see your estimate."
+          action={
+            <Link
+              href="/services"
+              className="group inline-flex items-center gap-1 text-sm text-brand-300 transition-colors hover:text-brand-200"
+            >
+              All services <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          }
+        />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => {
+          {services.map((s, i) => {
             const Icon = CATEGORY_ICON[s.category];
             return (
-              <div
-                key={s.id}
-                className="rounded-xl border border-brand-400/15 bg-night-900 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-400/50 hover:shadow-md hover:shadow-brand-600/20"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-500/10">
-                  <Icon className="h-6 w-6 text-brand-400" />
-                </span>
-                <h3 className="mt-3 font-semibold">{s.name}</h3>
-                <p className="mt-1 text-sm text-slate-300">{s.summary}</p>
-                <p className="mt-3 text-sm font-medium text-white">From {money(s.basePrice)}</p>
-              </div>
+              <Reveal key={s.id} delay={(i % 3) * 90}>
+                <Link
+                  href={`/quote?service=${s.id}`}
+                  className="surface glow-card group flex h-full flex-col rounded-2xl p-6"
+                >
+                  <span className="grid h-11 w-11 place-items-center rounded-xl border border-brand-400/20 bg-brand-500/10">
+                    <Icon className="h-5 w-5 text-brand-300" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-medium text-white">{s.name}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">{s.summary}</p>
+                  <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-4 text-sm">
+                    <span className="text-slate-400">
+                      From <span className="font-medium text-white">{money(s.basePrice)}</span>
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-brand-300 opacity-70 transition-all group-hover:opacity-100">
+                      Estimate <ArrowUpRight className="h-3.5 w-3.5" />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
             );
           })}
         </div>
       </section>
 
-      <section className="bg-[radial-gradient(ellipse_65%_50%_at_50%_50%,rgb(46_16_101/0.55),transparent_100%)] py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <h2 className="text-2xl font-bold">How we work</h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* ---------- Process ---------- */}
+      <section className="relative py-24">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgb(46_16_101/0.45),transparent_100%)]"
+        />
+        <div className="relative mx-auto max-w-6xl px-4">
+          <SectionHeading eyebrow="02 — Process" title="A simple process, with no surprises." />
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/8 bg-white/6 sm:grid-cols-2 lg:grid-cols-4">
             {PROCESS.map((p, i) => (
-              <div key={p.title}>
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-linear-to-br from-brand-400 to-brand-700 font-semibold text-white">
-                  {i + 1}
-                </span>
-                <h3 className="mt-3 font-semibold">{p.title}</h3>
-                <p className="mt-1 text-sm text-slate-300">{p.text}</p>
-              </div>
+              <Reveal key={p.title} delay={i * 100} className="bg-night-950/90 p-6 sm:p-8">
+                <p className="font-mono text-xs text-brand-300/80">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="mt-10 text-lg font-medium text-white">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">{p.text}</p>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* ---------- Why us ---------- */}
+      <section className="mx-auto max-w-6xl px-4 py-24">
+        <SectionHeading eyebrow="03 — Why NT Tech" title="Built for small teams with big plans." />
+        <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {WHY.map((w, i) => (
+            <Reveal key={w.title} delay={(i % 3) * 90} className="flex gap-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/4">
+                <w.icon className="h-4.5 w-4.5 text-brand-300" />
+              </span>
+              <div>
+                <h3 className="font-medium text-white">{w.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-400">{w.text}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ---------- Recent work ---------- */}
       {projects.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-16">
-          <div className="mb-8 flex items-end justify-between">
-            <h2 className="text-2xl font-bold">Recent projects</h2>
-            <Link href="/portfolio" className="text-sm font-medium text-brand-300 hover:underline">
-              Full portfolio →
-            </Link>
-          </div>
+        <section className="mx-auto max-w-6xl px-4 py-24">
+          <SectionHeading
+            eyebrow="04 — Work"
+            title="Recent projects."
+            action={
+              <Link
+                href="/portfolio"
+                className="group inline-flex items-center gap-1 text-sm text-brand-300 transition-colors hover:text-brand-200"
+              >
+                Full portfolio <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            }
+          />
           <div className="grid gap-4 md:grid-cols-3">
-            {projects.map((p) => (
-              <article key={p.id} className="rounded-xl border border-brand-400/15 bg-night-900 p-5 shadow-sm">
-                <p className="text-xs font-medium uppercase tracking-wide text-brand-400">{p.service?.name}</p>
-                <h3 className="mt-2 font-semibold">{p.title}</h3>
-                <p className="mt-2 text-sm text-slate-300">{p.summary}</p>
-              </article>
+            {projects.map((p, i) => (
+              <Reveal key={p.id} delay={i * 100} as="article" className="surface glow-card flex flex-col rounded-2xl p-6">
+                <Eyebrow className="text-[10px]">{p.service?.name ?? "Custom"}</Eyebrow>
+                <h3 className="mt-3 text-lg font-medium text-white">{p.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-400">{p.summary}</p>
+                {p.techStack.length > 0 && (
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {p.techStack.slice(0, 4).map((t) => (
+                      <span key={t} className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-400">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </Reveal>
             ))}
           </div>
         </section>
       )}
 
-      <section className="mx-auto my-16 max-w-6xl px-4">
-        <div className="relative overflow-hidden rounded-2xl bg-night-900 p-8 text-white">
+      {/* ---------- Call to action ---------- */}
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <Reveal className="relative overflow-hidden rounded-3xl border border-white/8 px-6 py-20 text-center">
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_0%_50%,rgb(124_58_237/0.5),transparent_60%)]"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_100%,rgb(124_58_237/0.4),transparent_70%)]"
           />
-          <div className="relative flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div className="flex items-center gap-4">
-              <NixoAvatar size={64} className="glow-ring" />
-              <div>
-                <h2 className="glow-text text-2xl font-bold">Have a project in mind?</h2>
-                <p className="mt-1 text-brand-200">Get a price range in under a minute, or ask Nixo first.</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <AskNixoButton className="rounded-lg border border-brand-300/40 px-5 py-3 font-medium text-brand-100 hover:bg-white/5">
+          <div aria-hidden className="bg-grid pointer-events-none absolute inset-0" />
+          <div className="relative flex flex-col items-center">
+            <NixoAvatar size={72} className="glow-ring" />
+            <Eyebrow className="mt-6">Ready to build?</Eyebrow>
+            <h2 className="text-gradient mt-3 max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
+              Let&apos;s build what&apos;s next.
+            </h2>
+            <p className="mt-4 max-w-md text-slate-400">
+              Get a price range in under a minute, or ask Nixo anything first.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/quote"
+                className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 font-medium text-night-950 transition-all hover:bg-brand-100 active:scale-[0.97]"
+              >
+                Start your quote <ArrowRight className="h-4 w-4" />
+              </Link>
+              <AskNixoButton className="inline-flex h-11 items-center rounded-xl border border-white/15 px-5 font-medium text-slate-200 transition-all hover:bg-white/6 active:scale-[0.97]">
                 Ask Nixo
               </AskNixoButton>
-              <Link href="/quote" className="rounded-lg bg-brand-600 px-5 py-3 font-medium text-white shadow-lg shadow-brand-600/40 hover:bg-brand-500">
-                Start your quote
-              </Link>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
     </>
   );

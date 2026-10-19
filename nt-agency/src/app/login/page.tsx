@@ -1,45 +1,85 @@
 import { Suspense } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Bot, KanbanSquare, Sparkles } from "lucide-react";
 import { getSession } from "@/lib/auth";
+import { Logo } from "@/components/public/Navbar";
 import { LoginForm } from "./LoginForm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Team login" };
 
+const POINTS = [
+  { icon: Sparkles, text: "Every inquiry scored and summarised by Nixo" },
+  { icon: KanbanSquare, text: "Move leads from first contact to signed project" },
+  { icon: Bot, text: "Draft replies ready to review and send" },
+];
+
 export default async function LoginPage() {
   if (await getSession()) redirect("/admin");
 
   return (
-    <div className="relative grid min-h-screen place-items-center overflow-hidden bg-night-950 px-4 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,rgb(124_58_237/0.4),transparent_55%)]"
-      />
-      <div className="relative w-full max-w-sm">
-        <Link href="/" className="mb-6 flex flex-col items-center gap-3 font-semibold text-white">
-          <Image
-            src="/nixo/nixo-face.webp"
-            alt="Nixo, the NT Tech Innovation mascot"
-            width={88}
-            height={88}
-            priority
-            className="glow-ring rounded-full"
-          />
-          NT Tech Innovation
-        </Link>
-        <div className="rounded-xl bg-night-900 p-6 shadow-2xl shadow-brand-900/40">
-          <h1 className="text-xl font-semibold">Team login</h1>
-          <p className="mt-1 text-sm text-slate-400">Sign in to manage leads and content.</p>
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Brand panel */}
+      <div className="relative hidden overflow-hidden border-r border-white/5 lg:block">
+        <div aria-hidden className="bg-grid absolute inset-0" />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_60%,rgb(124_58_237/0.4),transparent_70%)]"
+        />
+        <div className="relative flex h-full flex-col justify-between p-10">
+          <Logo />
+          <div className="mx-auto w-72 animate-[slide-up_0.8s_var(--ease-out-soft)_both]">
+            <Image
+              src="/nixo/nixo-body.webp"
+              alt="Nixo, the NT Tech Innovation mascot"
+              width={600}
+              height={660}
+              priority
+              className="nixo-fade nixo-float h-auto w-full"
+            />
+          </div>
+          <ul className="space-y-3">
+            {POINTS.map((p, i) => (
+              <li
+                key={p.text}
+                className="flex animate-slide-up items-center gap-3 text-sm text-slate-300"
+                style={{ animationDelay: `${300 + i * 120}ms` }}
+              >
+                <span className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/5">
+                  <p.icon className="h-4 w-4 text-brand-300" />
+                </span>
+                {p.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Form panel */}
+      <div className="relative flex items-center justify-center px-4 py-12">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgb(76_29_149/0.3),transparent_70%)] lg:hidden"
+        />
+        <div className="relative w-full max-w-sm animate-page-in">
+          <div className="mb-10 lg:hidden">
+            <Logo />
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-white">Welcome back</h1>
+          <p className="mt-1.5 text-sm text-slate-400">Sign in to manage leads, projects and content.</p>
           <Suspense>
             <LoginForm />
           </Suspense>
-        </div>
-        <div className="mt-4 rounded-lg border border-dashed border-brand-300/30 bg-white/5 p-3 text-xs text-brand-100">
-          <p className="font-medium text-white">Demo accounts</p>
-          <p>Admin: admin@demo.com / Admin12345</p>
-          <p>Staff: staff@demo.com / Staff12345</p>
+          <div className="mt-8 rounded-xl border border-dashed border-white/10 bg-white/2 p-4 text-xs text-slate-400">
+            <p className="mb-1.5 font-mono uppercase tracking-[0.18em] text-slate-500">Demo accounts</p>
+            <p>
+              Admin · <span className="text-slate-200">admin@demo.com</span> / Admin12345
+            </p>
+            <p>
+              Staff · <span className="text-slate-200">staff@demo.com</span> / Staff12345
+            </p>
+          </div>
         </div>
       </div>
     </div>

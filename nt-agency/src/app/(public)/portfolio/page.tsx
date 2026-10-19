@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/db";
-import { EmptyState } from "@/components/ui";
+import { EmptyState, Reveal } from "@/components/ui";
+import { CATEGORY_ICON } from "@/components/public/categoryIcon";
+import { Eyebrow, PageIntro } from "@/components/public/Section";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Portfolio" };
+export const metadata = { title: "Our work" };
 
 export default async function PortfolioPage() {
   const projects = await prisma.project.findMany({
@@ -12,34 +14,43 @@ export default async function PortfolioPage() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
-      <h1 className="text-3xl font-bold">Portfolio</h1>
-      <p className="mt-2 text-slate-300">A selection of projects we have delivered (sample case studies for this concept).</p>
+    <>
+      <PageIntro
+        eyebrow="Work"
+        title="Projects we've shipped."
+        description="A selection of delivered projects. These are sample case studies for this concept site."
+      />
 
-      {projects.length === 0 ? (
-        <div className="mt-10">
+      <div className="mx-auto max-w-6xl px-4 pb-8">
+        {projects.length === 0 ? (
           <EmptyState title="No published projects yet" description="Check back soon." />
-        </div>
-      ) : (
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {projects.map((p) => (
-            <article key={p.id} className="rounded-xl border border-white/10 bg-night-900 p-6 shadow-sm">
-              <p className="text-xs font-medium uppercase tracking-wide text-brand-400">{p.service?.name ?? "Custom"}</p>
-              <h2 className="mt-2 text-lg font-semibold">{p.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">{p.summary}</p>
-              {p.techStack.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {p.techStack.map((t) => (
-                    <span key={t} className="rounded-full bg-night-800 px-2.5 py-0.5 text-xs text-slate-200">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </article>
-          ))}
-        </div>
-      )}
-    </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {projects.map((p, i) => {
+              const Icon = p.service ? CATEGORY_ICON[p.service.category] : null;
+              return (
+                <Reveal key={p.id} as="article" delay={(i % 2) * 100} className="surface glow-card rounded-2xl p-7">
+                  <div className="flex items-center justify-between gap-3">
+                    <Eyebrow className="text-[10px]">{p.service?.name ?? "Custom"}</Eyebrow>
+                    {Icon && <Icon className="h-4 w-4 text-slate-500" />}
+                  </div>
+                  <h2 className="mt-4 text-xl font-medium tracking-tight text-white">{p.title}</h2>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-400">{p.summary}</p>
+                  {p.techStack.length > 0 && (
+                    <div className="mt-6 flex flex-wrap gap-1.5 border-t border-white/5 pt-5">
+                      {p.techStack.map((t) => (
+                        <span key={t} className="rounded-md bg-white/5 px-2 py-0.5 text-xs text-slate-400">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Reveal>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

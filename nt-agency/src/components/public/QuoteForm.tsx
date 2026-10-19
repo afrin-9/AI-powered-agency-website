@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import type { Timeline } from "@prisma/client";
 import { api, FetchError } from "@/lib/fetcher";
 import { TIMELINE_LABEL } from "@/lib/labels";
-import { Button, Card, Field, Input, Select, Textarea, money } from "@/components/ui";
+import { Button, Card, Field, Input, Select, Textarea, cn, money } from "@/components/ui";
 
 interface ServiceOption {
   id: string;
@@ -113,7 +113,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
 
   if (done) {
     return (
-      <Card className="mt-10 p-8 text-center">
+      <Card className="mx-auto max-w-xl animate-pop-in p-10 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-500" />
         <h2 className="mt-4 text-2xl font-semibold">Thank you, {form.name.split(" ")[0]}!</h2>
         <p className="mt-2 text-slate-300">
@@ -128,7 +128,10 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           </p>
         )}
         <div className="mt-6 flex justify-center gap-3">
-          <Link href="/" className="rounded-lg border border-white/15 px-4 py-2 text-sm">
+          <Link
+            href="/"
+            className="inline-flex h-10 items-center rounded-lg border border-white/10 bg-white/5 px-4 text-sm transition-colors hover:bg-white/10"
+          >
             Back to home
           </Link>
           <Button
@@ -146,8 +149,9 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
-      <Card className="space-y-5 p-6">
+    <form onSubmit={onSubmit} noValidate className="grid gap-6 lg:grid-cols-[1fr_340px]">
+      <Card className="space-y-8 p-6 sm:p-8">
+        <FormStep n={1} title="About you" />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Your name *" htmlFor="name" error={errors.name}>
             <Input
@@ -187,6 +191,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           </Field>
         </div>
 
+        <FormStep n={2} title="Your project" />
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Service" htmlFor="service" error={errors.serviceId}>
             <Select id="service" value={serviceId} onChange={(e) => setServiceId(e.target.value)}>
@@ -198,14 +203,24 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
               <option value="">Not sure yet</option>
             </Select>
           </Field>
-          <Field label="Timeline" htmlFor="timeline">
-            <Select id="timeline" value={timeline} onChange={(e) => setTimeline(e.target.value as Timeline)}>
-              {Object.entries(TIMELINE_LABEL).map(([k, v]) => (
-                <option key={k} value={k}>
-                  {v}
-                </option>
+          <Field label="Timeline">
+            <div role="radiogroup" aria-label="Timeline" className="grid h-10 grid-cols-3 rounded-lg border border-white/10 bg-night-950/60 p-1">
+              {(Object.keys(TIMELINE_LABEL) as Timeline[]).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="radio"
+                  aria-checked={timeline === t}
+                  onClick={() => setTimeline(t)}
+                  className={cn(
+                    "rounded-md text-xs font-medium capitalize transition-all duration-200",
+                    timeline === t ? "bg-brand-600 text-white shadow" : "text-slate-400 hover:text-white",
+                  )}
+                >
+                  {t.toLowerCase()}
+                </button>
               ))}
-            </Select>
+            </div>
           </Field>
         </div>
 
@@ -221,7 +236,7 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
             max={20}
             value={features}
             onChange={(e) => setFeatures(Number(e.target.value))}
-            className="w-full accent-brand-600"
+            className="w-full cursor-pointer accent-brand-500"
           />
         </Field>
 
@@ -265,21 +280,25 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           />
         </div>
 
-        <Button type="submit" loading={submitting} className="w-full sm:w-auto">
+        <Button type="submit" loading={submitting} className="h-11 w-full px-6 sm:w-auto">
           {submitting ? "Sending..." : "Send request"}
         </Button>
       </Card>
 
       <aside className="lg:sticky lg:top-24 lg:self-start">
-        <Card className="p-6">
-          <p className="text-sm font-medium text-slate-400">Instant estimate</p>
+        <Card className="relative isolate overflow-hidden p-6">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgb(124_58_237/0.25),transparent_70%)]"
+          />
+          <p className="relative font-mono text-[11px] uppercase tracking-[0.2em] text-brand-300/80">Instant estimate</p>
           {!serviceId ? (
-            <p className="mt-3 text-sm text-slate-300">
+            <p className="relative mt-3 text-sm text-slate-300">
               Pick a service to see an estimate. Not sure? Our team will advise.
             </p>
           ) : estimate ? (
-            <div className={estimating ? "opacity-60 transition-opacity" : "transition-opacity"}>
-              <p className="mt-2 text-3xl font-bold text-white">
+            <div className={cn("relative transition-opacity duration-300", estimating && "opacity-60")}>
+              <p key={`${estimate.min}-${estimate.max}`} className="mt-3 animate-fade-in text-3xl font-semibold tracking-tight text-white">
                 {money(estimate.min)} <span className="text-lg font-normal text-slate-400">to</span>{" "}
                 {money(estimate.max)}
               </p>
@@ -305,11 +324,22 @@ export function QuoteForm({ services, initialServiceId }: { services: ServiceOpt
           ) : (
             <p className="mt-3 text-sm text-red-400">Couldn&apos;t load an estimate. You can still send your request.</p>
           )}
-          <p className="mt-4 text-xs text-slate-500">
+          <p className="relative mt-5 text-xs text-slate-500">
             Estimates are indicative; the final quote follows a free discovery call.
           </p>
         </Card>
       </aside>
     </form>
+  );
+}
+
+function FormStep({ n, title }: { n: number; title: string }) {
+  return (
+    <div className="flex items-center gap-3 border-b border-white/5 pb-3">
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-brand-500/15 font-mono text-xs text-brand-200 ring-1 ring-brand-400/30">
+        {n}
+      </span>
+      <h2 className="text-sm font-medium text-white">{title}</h2>
+    </div>
   );
 }
