@@ -279,17 +279,18 @@ npm run dev                 # http://localhost:3000
 
 ## 13. Deployment
 
-Vercel (app) and Neon (PostgreSQL), both on free tiers:
+Vercel (app) and Neon (PostgreSQL), both on free tiers. Live demo: **https://nt-tech-agency.vercel.app**
 
-1. Create a Neon project and copy its connection string.
-2. Import the GitHub repository into Vercel.
-3. Set `DATABASE_URL`, a new random `JWT_SECRET` and, optionally, `ANTHROPIC_API_KEY`.
-4. Set the build command to `prisma migrate deploy && npm run build`.
-5. Deploy, then seed the Neon database once from your machine (PowerShell):
+1. In Vercel, create the project with **Root Directory** `nt-agency` (`vercel.json` pins the Next.js preset).
+2. Add a Neon database from the project's **Storage** tab with the default prefix, so it creates `DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct).
+3. Add a new random `JWT_SECRET` and, optionally, `ANTHROPIC_API_KEY`.
+4. For a demo, add `SEED_DEMO_DATA=true`.
+5. Deploy. Vercel runs `npm run vercel-build`, which:
+   - applies the migrations over the direct connection;
+   - loads the demo data only if `SEED_DEMO_DATA=true` and the database has no users (so it never wipes real data);
+   - builds the app.
 
-   ```powershell
-   $env:DATABASE_URL="<neon-connection-string>"; npm run db:seed
-   ```
+From the CLI: `vercel link`, `vercel integration add neon`, `vercel env add JWT_SECRET production`, then `vercel deploy --prod`. `.vercelignore` keeps local `.env` files out of the upload.
 
 ## 14. Key API endpoints
 
