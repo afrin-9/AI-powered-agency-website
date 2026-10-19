@@ -385,7 +385,9 @@ Here is the journey this manual followed, from a customer's first visit to a run
 | The estimate box says it couldn't load | You can still send the request. Refresh the page; if it continues, check the app is running. |
 | Nixo's answers seem basic | Without an API key Nixo uses the built-in keyword system. Add `ANTHROPIC_API_KEY` to `.env` and restart (see [Part 1](#1-getting-started)). |
 | Pages look broken or unstyled after updating the code | Stop the app, delete the `.next` folder, and run `npm run dev` again. |
-| Port 3000 is already in use | Another copy of the app is running. Close it, or start on another port with `npm run dev -- -p 3001`. |
+| Port 3000 is already in use | Another copy of the app is still running. Close that copy first (press **Ctrl + C** in its terminal). Don't start a second copy on another port: both would share the `.next` folder and break each other. |
+| The first visit to a page, or the first sign-in, takes a few seconds | Normal for `npm run dev`: each page is prepared the first time you open it, then it is fast. For a quick, realistic demo run `npm run preview` instead (it builds the app once, then every page opens instantly). |
+| Clicking **Team login** shows "too many redirects" | Fixed in the current version. On an older copy, clear the site's cookies for `localhost` (or use a private window) and log in again. |
 
 ---
 

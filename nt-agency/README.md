@@ -251,7 +251,8 @@ npm run dev                 # http://localhost:3000
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Development server |
+| `npm run dev` | Development server (compiles each page on first visit, so first loads take a few seconds) |
+| `npm run preview` | Build once, then serve the production build: pages respond in ~30 ms; use it for demos |
 | `npm run build` / `npm start` | Production build / run it |
 | `npm run typecheck` / `npm run lint` | TypeScript check / ESLint |
 | `npm test` | Unit + integration tests |
