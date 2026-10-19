@@ -23,7 +23,7 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Utilities such as `animate-page-in`; keyframes live in animations.css. */
-  --animate-page-in: page-in 0.5s var(--ease-out-soft) both;
+  --animate-page-in: page-in 0.35s var(--ease-out-soft) both;
   --animate-fade-in: fade-in 0.2s ease-out both;
   --animate-pop-in: pop-in 0.25s var(--ease-out-soft) both;
   --animate-slide-up: slide-up 0.3s var(--ease-out-soft) both;

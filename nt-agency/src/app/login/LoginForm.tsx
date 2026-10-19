@@ -34,8 +34,8 @@ export function LoginForm() {
         json: { email, password },
       });
       toast.success(`Welcome back, ${user.name.split(" ")[0]}`);
+      // Admin pages are dynamic, so this navigation already renders fresh; no refresh() needed.
       router.replace(safeNext(params.get("next")));
-      router.refresh();
     } catch (err) {
       setError(err instanceof FetchError ? err.message : "Login failed");
       setLoading(false);

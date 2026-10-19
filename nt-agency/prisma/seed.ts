@@ -26,7 +26,7 @@ async function main() {
 
   const [admin, staff] = await Promise.all(
     DEMO_ACCOUNTS.map(async ({ password, ...user }) =>
-      prisma.user.create({ data: { ...user, passwordHash: await bcrypt.hash(password, 12) } }),
+      prisma.user.create({ data: { ...user, passwordHash: await bcrypt.hash(password, 10) } }),
     ),
   );
 

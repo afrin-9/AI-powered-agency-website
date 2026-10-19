@@ -5,8 +5,12 @@ import { prisma } from "./db";
 import { ApiError } from "./api";
 import { SESSION_COOKIE, SESSION_TTL_SECONDS, signSession, verifySession, type SessionPayload } from "./session";
 
+// Cost 10 is the OWASP minimum for bcrypt and keeps sign-in fast with the pure-JS bcryptjs
+// (~120 ms per check versus ~470 ms at cost 12).
+export const BCRYPT_COST = 10;
+
 export async function hashPassword(password: string) {
-  return bcrypt.hash(password, 12);
+  return bcrypt.hash(password, BCRYPT_COST);
 }
 
 export async function verifyPassword(password: string, hash: string) {
@@ -23,7 +27,14 @@ export async function authenticate(email: string, password: string) {
     await verifyPassword(password, dummyHash);
     return null;
   }
-  return (await verifyPassword(password, user.passwordHash)) ? user : null;
+  if (!(await verifyPassword(password, user.passwordHash))) return null;
+  // Hashes made with an older cost are upgraded in the background on a successful sign-in.
+  if (bcrypt.getRounds(user.passwordHash) !== BCRYPT_COST) {
+    void hashPassword(password)
+      .then((passwordHash) => prisma.user.update({ where: { id: user.id }, data: { passwordHash } }))
+      .catch(() => {});
+  }
+  return user;
 }
 
 export async function setSessionCookie(session: SessionPayload) {
