@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { HydrationMarker } from "@/components/ui";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,8 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+    <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
+      <head>
+        {/* Marks that JS is available, so scroll-reveal content may start hidden. */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <HydrationMarker />
         {children}
         <Toaster theme="dark" richColors position="top-right" closeButton />
       </body>

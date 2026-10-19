@@ -1,8 +1,8 @@
-import { Loader2, X } from "lucide-react";
+import type { ReactNode } from "react";
+import { Loader2 } from "lucide-react";
 import type {
   ButtonHTMLAttributes,
   InputHTMLAttributes,
-  ReactNode,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
@@ -21,10 +21,11 @@ export function money(n: number | null | undefined) {
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-brand-600 text-white shadow-sm hover:bg-brand-700",
-  secondary: "border border-white/15 bg-night-900 text-slate-100 hover:bg-night-800/60",
-  ghost: "text-slate-200 hover:bg-night-800",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  primary:
+    "bg-brand-600 text-white shadow-[0_0_0_1px_rgb(167_139_250/0.4)_inset,0_8px_24px_-8px_rgb(124_58_237/0.7)] hover:bg-brand-500",
+  secondary: "border border-white/10 bg-white/4 text-slate-100 hover:border-white/20 hover:bg-white/8",
+  ghost: "text-slate-300 hover:bg-white/6 hover:text-white",
+  danger: "bg-red-600/90 text-white hover:bg-red-500",
 };
 
 export function Button({
@@ -41,8 +42,8 @@ export function Button({
       {...props}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60",
-        size === "sm" ? "px-3 py-1.5" : "px-4 py-2",
+        "inline-flex items-center justify-center gap-2 rounded-lg text-sm font-medium transition-all duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
+        size === "sm" ? "h-8 px-3" : "h-10 px-4",
         variants[variant],
         className,
       )}
@@ -69,29 +70,31 @@ export function Field({
   children: ReactNode;
 }) {
   return (
-    <div className="space-y-1">
-      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-200">
+    <div className="space-y-1.5">
+      <label htmlFor={htmlFor} className="block text-sm font-medium text-slate-300">
         {label}
       </label>
       {children}
       {error ? (
-        <p className="text-xs text-red-400" role="alert">
+        <p className="animate-fade-in text-xs text-red-400" role="alert">
           {error}
         </p>
       ) : (
-        hint && <p className="text-xs text-slate-400">{hint}</p>
+        hint && <p className="text-xs text-slate-500">{hint}</p>
       )}
     </div>
   );
 }
 
 const inputBase =
-  "w-full rounded-lg border bg-night-950/70 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/40";
+  "w-full rounded-lg border bg-night-950/60 px-3 py-2 text-sm text-white placeholder:text-slate-500 transition-colors duration-200 hover:border-white/20 focus:border-brand-400/60 focus:outline-none focus:ring-4 focus:ring-brand-500/15";
 
-const borderFor = (invalid?: boolean) => (invalid ? "border-red-400" : "border-white/15");
+const borderFor = (invalid?: boolean) => (invalid ? "border-red-400/70" : "border-white/10");
 
 export function Input({ invalid, className, ...props }: InputHTMLAttributes<HTMLInputElement> & { invalid?: boolean }) {
-  return <input {...props} aria-invalid={invalid || undefined} className={cn(inputBase, borderFor(invalid), className)} />;
+  return (
+    <input {...props} aria-invalid={invalid || undefined} className={cn(inputBase, "h-10", borderFor(invalid), className)} />
+  );
 }
 
 export function Textarea({
@@ -111,7 +114,11 @@ export function Select({
   ...props
 }: SelectHTMLAttributes<HTMLSelectElement> & { invalid?: boolean }) {
   return (
-    <select {...props} aria-invalid={invalid || undefined} className={cn(inputBase, borderFor(invalid), className)}>
+    <select
+      {...props}
+      aria-invalid={invalid || undefined}
+      className={cn(inputBase, "h-10", borderFor(invalid), className)}
+    >
       {children}
     </select>
   );
@@ -120,24 +127,57 @@ export function Select({
 // ---------- Display ----------
 
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("rounded-xl border border-white/10 bg-night-900 shadow-sm", className)}>{children}</div>;
+  return (
+    <div className={cn("rounded-2xl border border-white/8 bg-night-900/70 backdrop-blur-sm", className)}>
+      {children}
+    </div>
+  );
+}
+
+/** Page title row used across the admin area. */
+export function PageHeader({
+  title,
+  description,
+  actions,
+  eyebrow,
+}: {
+  title: string;
+  description?: string;
+  actions?: ReactNode;
+  eyebrow?: ReactNode;
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        {eyebrow && <div className="mb-2 text-xs text-slate-500">{eyebrow}</div>}
+        <h1 className="text-2xl font-semibold tracking-tight text-white">{title}</h1>
+        {description && <p className="mt-1 text-sm text-slate-400">{description}</p>}
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+    </div>
+  );
 }
 
 const badgeColors = {
-  slate: "bg-night-800 text-slate-200",
-  blue: "bg-blue-500/15 text-blue-300",
-  amber: "bg-amber-500/15 text-amber-300",
-  violet: "bg-violet-500/15 text-violet-300",
-  green: "bg-emerald-500/15 text-emerald-300",
-  red: "bg-red-500/15 text-red-300",
-  indigo: "bg-brand-500/20 text-brand-300",
+  slate: "bg-white/6 text-slate-300 ring-white/10",
+  blue: "bg-blue-500/10 text-blue-300 ring-blue-400/20",
+  amber: "bg-amber-500/10 text-amber-300 ring-amber-400/20",
+  violet: "bg-violet-500/10 text-violet-300 ring-violet-400/20",
+  green: "bg-emerald-500/10 text-emerald-300 ring-emerald-400/20",
+  red: "bg-red-500/10 text-red-300 ring-red-400/20",
+  indigo: "bg-brand-500/15 text-brand-200 ring-brand-400/25",
 } as const;
 
 export type BadgeColor = keyof typeof badgeColors;
 
 export function Badge({ color = "slate", children }: { color?: BadgeColor; children: ReactNode }) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium", badgeColors[color])}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
+        badgeColors[color],
+      )}
+    >
       {children}
     </span>
   );
@@ -145,25 +185,28 @@ export function Badge({ color = "slate", children }: { color?: BadgeColor; child
 
 export function Spinner({ label = "Loading..." }: { label?: string }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-10 text-sm text-slate-400" role="status">
-      <Loader2 className="h-5 w-5 animate-spin" aria-hidden /> {label}
+    <div className="flex animate-fade-in items-center justify-center gap-2 py-16 text-sm text-slate-400" role="status">
+      <Loader2 className="h-5 w-5 animate-spin text-brand-400" aria-hidden /> {label}
     </div>
   );
 }
 
 export function EmptyState({ title, description, action }: { title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-white/15 bg-night-900 px-6 py-12 text-center">
+    <div className="flex animate-fade-in flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-white/10 bg-white/2 px-6 py-14 text-center">
       <p className="font-medium text-slate-100">{title}</p>
       {description && <p className="max-w-sm text-sm text-slate-400">{description}</p>}
-      {action && <div className="mt-2">{action}</div>}
+      {action && <div className="mt-3">{action}</div>}
     </div>
   );
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
-    <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-6 text-center text-sm text-red-300" role="alert">
+    <div
+      className="animate-fade-in rounded-2xl border border-red-500/25 bg-red-500/7 px-4 py-8 text-center text-sm text-red-300"
+      role="alert"
+    >
       <p>{message}</p>
       {onRetry && (
         <Button variant="secondary" size="sm" className="mt-3" onClick={onRetry}>
@@ -174,38 +217,5 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
   );
 }
 
-export function Modal({
-  open,
-  title,
-  onClose,
-  children,
-}: {
-  open: boolean;
-  title: string;
-  onClose: () => void;
-  children: ReactNode;
-}) {
-  if (!open) return null;
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4 sm:items-center"
-      onClick={onClose}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-night-900 p-6 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <button onClick={onClose} className="rounded p-1 text-slate-400 hover:bg-night-800" aria-label="Close">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
+// Interactive pieces that need hooks live in a client module.
+export { HydrationMarker, Modal, Reveal } from "./ui-client";
