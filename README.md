@@ -1,6 +1,6 @@
-# NT Agency — AI-powered agency website and lead pipeline
+# AI-powered agency website and lead pipeline
 
-A full-stack concept website for a software agency (NT Tech Innovation). Visitors browse services and past projects, get an instant price estimate, ask an AI assistant questions and send an inquiry. Staff log in to an admin area where every inquiry has already been sorted by AI, then move it through a sales pipeline until it becomes a client project.
+A full-stack concept website for a software agency. Visitors browse services and past projects, get an instant price estimate, ask an AI assistant questions and send an inquiry. Staff log in to an admin area where every inquiry has already been sorted by AI, then move it through a sales pipeline until it becomes a client project.
 
 > Concept project with sample content. It is not the agency's official website.
 
